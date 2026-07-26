@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FilaCero - Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+body{
+
+background:linear-gradient(135deg,#2563eb,#1e3a8a);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+
+}
+
+.card{
+
+background:white;
+width:420px;
+padding:40px;
+border-radius:20px;
+box-shadow:0 20px 40px rgba(0,0,0,.25);
+text-align:center;
+
+}
+
+h1{
+
+color:#2563eb;
+margin-bottom:15px;
+
+}
+
+img{
+
+width:90px;
+height:90px;
+border-radius:50%;
+background:#2563eb;
+padding:15px;
+margin-bottom:20px;
+
+}
+
+.info{
+
+margin:15px 0;
+font-size:17px;
+color:#555;
+
+}
+
+span{
+
+font-weight:600;
+color:#111;
+
+}
+
+button{
+
+margin-top:30px;
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+background:#ef4444;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:.3s;
+
+}
+
+button:hover{
+
+background:#dc2626;
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+<img src="https://cdn-icons-png.flaticon.com/512/847/847969.png">
+
+<h1>Bienvenido</h1>
+
+<div class="info">
+
+Nombre:<br>
+
+<span id="nombreUsuario">Cargando...</span>
+
+</div>
+
+<div class="info">
+
+Correo:<br>
+
+<span id="correoUsuario">Cargando...</span>
+
+</div>
+
+<button id="logout">
+
+Cerrar sesión
+
+</button>
+
+</div>
+
+<script type="module" src="app.js"></script>
+
+// Todo esto se completará en app.js cuando conectemos Firebase
+
+</script>
+
+</body>
+</html>
