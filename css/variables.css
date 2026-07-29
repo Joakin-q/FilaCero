@@ -1,0 +1,16 @@
+/* css/variables.css */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+
+:root {
+    /* Paleta de colores basada en el diseño */
+    --bg-cream: #f7f4d4;
+    --primary-green: #104a32;
+    --accent-light-green: #e2ead6;
+    --accent-light-blue: #e2f0f9;
+    --accent-pink: #f6e6e6;
+    --text-dark: #1b2a22;
+    --text-muted: #738078;
+    
+    /* Tipografía */
+    --font-main: 'Nunito', sans-serif;
+}
