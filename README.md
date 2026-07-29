@@ -1,7 +1,7 @@
 # Comandos útiles de Git
 
 1. git init
-2. git add
+2. git add .
 3. git reset
 4. git commit
 5. git checkout --.
@@ -12,7 +12,8 @@
 10. git branch -d rama-heroes
 11. git push
 12. git commit -am
-
+13. git pull
+12134
 funciona?
 
 13. repampanos
