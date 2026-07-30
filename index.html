@@ -1,85 +1,175 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FilaCero - Salud sin esperas</title>
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1E3A2E">
+  <meta name="description" content="FilaCero — Sistema de gestión de turnos médicos. Reservá tu turno médico sin filas ni esperas.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpeg">
+  <title>FilaCero · Sin filas, sin esperas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    body { background: var(--color-bg); }
+    .landing {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      text-align: center;
+      gap: 24px;
+    }
+    .landing-logo {
+      width: 140px;
+      height: 140px;
+      background: white;
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 36px rgba(28,43,34,0.15);
+    }
+    .landing-logo img { width: 100px; }
+    .landing h1 {
+      font-size: 2rem;
+      color: var(--color-header-green-1);
+      max-width: 320px;
+    }
+    .landing .tagline {
+      font-size: 15px;
+      color: var(--color-text-muted);
+      max-width: 360px;
+      line-height: 1.5;
+    }
+    .landing-features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 320px;
+      width: 100%;
+      margin-top: 12px;
+    }
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: white;
+      border-radius: 16px;
+      text-align: left;
+      box-shadow: var(--shadow-card);
+      font-size: 13px;
+      color: var(--color-text-dark);
+    }
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--color-primary-light);
+      color: var(--color-header-green-1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .landing-cta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 320px;
+      width: 100%;
+      margin-top: 16px;
+    }
+    .landing-cta .btn { width: 100%; }
+    .landing-foot {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 24px;
+    }
+    @media (min-width: 1024px) {
+      .landing {
+        flex-direction: row;
+        gap: 64px;
+        text-align: left;
+        padding: 60px 80px;
+      }
+      .landing-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .landing-left .landing-logo {
+        margin: 0;
+      }
+      .landing h1 {
+        font-size: 3rem;
+        max-width: none;
+      }
+      .landing .tagline { font-size: 17px; max-width: 480px; }
+      .landing-features { max-width: 480px; }
+      .landing-right {
+        flex: 1;
+        max-width: 420px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <main class="landing-container">
-        <header class="header">
-            <div class="logo-container">
-                <img src="assets/images/filacero_logo.png" alt="Logo FilaCero" class="logo-img">
-                <div class="brand-text">
-                    <p>Salud sin esperas</p>
-                </div>
-            </div>
-            <div class="system-icons desktop-hide">
-                <span>•••</span>
-            </div>
-        </header>
 
-        <div class="desktop-wrapper">
-            
-            <section class="hero-section">
-                <div class="hero-illustration">
-                    <div class="blob-background"></div>
-                    <div class="calendar-icon">
-                        <div class="calendar-header"></div>
-                        <div class="calendar-grid">
-                            <div class="calendar-day"></div><div class="calendar-day"></div>
-                            <div class="calendar-day active"></div><div class="calendar-day"></div>
-                            <div class="calendar-day"></div><div class="calendar-day"></div>
-                            <div class="calendar-day"></div><div class="calendar-day"></div>
-                        </div>
-                    </div>
-                </div>
+<div class="landing">
+  <div class="landing-left">
+    <div class="landing-logo">
+      <img src="assets/images/logo.jpeg" alt="FilaCero">
+    </div>
+    <h1>Tu turno médico, sin filas.</h1>
+    <p class="tagline">Reservá, reprogramá y cancelá turnos desde tu celular en segundos. FilaCero es la forma inteligente de gestionar tus consultas médicas.</p>
+  </div>
 
-                <div class="text-center">
-                    <h2>Solicitá tus turnos médicos de forma rápida y sencilla.</h2>
-                    <p class="subtitle">Organizá tus consultas, elegí profesionales y gestioná tus turnos desde cualquier lugar de forma simple y segura.</p>
-                </div>
-
-                <div class="tags-container">
-                    <span class="tag tag-secure">🛡️ Datos seguros</span>
-                    <span class="tag tag-time">🕒 24/7 disponible</span>
-                </div>
-            </section>
-
-            <section class="action-section">
-                <div class="action-buttons">
-                    <a href="paginas/login.html" class="btn btn-primary">Iniciar sesión ➔</a>
-                    <a href="paginas/registro.html" class="btn btn-outline">Registrarse</a>
-                </div>
-
-                <div class="stats">
-                    <div class="avatars">
-                        <div class="avatar" style="background:#2b6cb0;">M</div>
-                        <div class="avatar" style="background:#68d391;">J</div>
-                        <div class="avatar" style="background:#fc8181;">A</div>
-                        <div class="avatar" style="background:#276749;">S</div>
-                    </div>
-                    <span><strong>+18.000</strong> pacientes activos</span>
-                </div>
-
-                <footer class="footer-text">
-                    <p class="heart">❤️</p>
-                    <p><strong>Cuidamos tu tiempo. Cuidamos tu salud.</strong></p>
-                    <div class="footer-links">
-                        <a href="#">Términos</a>
-                        <a href="#">Privacidad</a>
-                        <a href="#">Ayuda</a>
-                    </div>
-                    <p class="copyright">© 2026 FilaCero. Todos los derechos reservados.</p>
-                </footer>
-            </section>
-            
+  <div class="landing-right">
+    <div class="landing-features">
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
         </div>
-    </main>
+        Reservá tu turno en 5 pasos
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        </div>
+        Sin esperas, sin llamadas
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+        </div>
+        Confirmación inmediata
+      </div>
+    </div>
 
-    <script src="js/app.js"></script>
+    <div class="landing-cta">
+      <a class="btn btn-primary" href="pages/auth/login.html">Iniciar sesión</a>
+      <a class="btn btn-outline" href="pages/auth/registro.html">Crear cuenta</a>
+    </div>
+
+    <div class="landing-foot">© 2025 FilaCero · Hecho con ♥ para una salud sin filas</div>
+  </div>
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    });
+  }
+</script>
 </body>
 </html>

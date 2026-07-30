@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1E3A2E">
+  <link rel="manifest" href="../../manifest.json">
+  <link rel="icon" type="image/jpeg" href="../../assets/images/logo.jpeg">
+  <title>Perfil · FilaCero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/variables.css">
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/paciente.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <aside class="desktop-sidebar" id="fc-sidebar"></aside>
+  <div class="desktop-main">
+    <header class="desktop-topbar" id="fc-topbar"></header>
+
+    <main class="desktop-content">
+      <div class="desktop-content-inner">
+
+        <header class="mobile-header">
+          <div class="mobile-header__top">
+            <div class="brand-tag">
+              <img src="../../assets/images/logo.jpeg" alt="FilaCero">
+              FILACERO
+            </div>
+          </div>
+          <h1>Mi perfil</h1>
+          <p>Tus datos personales y de contacto.</p>
+        </header>
+
+        <div style="padding: 16px;">
+          <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">JP</div>
+            <div>
+              <div class="profile-name" id="profileName">—</div>
+              <div class="profile-email" id="profileEmail">—</div>
+            </div>
+          </div>
+
+          <div class="profile-card-grid">
+            <div class="profile-section">
+              <h4>Datos personales</h4>
+              <div class="profile-row"><span class="label">DNI</span><span class="value" id="pDni">—</span></div>
+              <div class="profile-row"><span class="label">Fecha de nacimiento</span><span class="value" id="pFecha">—</span></div>
+              <div class="profile-row"><span class="label">Obra social</span><span class="value" id="pObra">—</span></div>
+              <div class="profile-row"><span class="label">Teléfono</span><span class="value" id="pTel">—</span></div>
+            </div>
+
+            <div class="profile-section">
+              <h4>Cuenta</h4>
+              <div class="profile-row"><span class="label">Email</span><span class="value" id="pEmail">—</span></div>
+              <div class="profile-row"><span class="label">Rol</span><span class="value">Paciente</span></div>
+            </div>
+          </div>
+
+          <button class="btn btn-outline" id="btnEdit" style="margin-top: 14px; width: 100%;">Editar datos</button>
+          <button class="btn btn-outline btn-outline--danger" id="btnLogout" style="margin-top: 8px; width: 100%;">Cerrar sesión</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" id="fc-bottom-nav"></nav>
+</div>
+
+<div class="modal-backdrop" id="fc-modal"></div>
+
+<script src="../../js/config.js"></script>
+<script src="../../js/data/db.js"></script>
+<script src="../../js/auth/auth.js"></script>
+<script src="../../js/utils/utils.js"></script>
+<script src="../../js/utils/lock-ui.js"></script>
+<script>
+  (async () => {
+    const session = window.FC_AUTH.requireAuth(['paciente']);
+    if (!session) return;
+
+    window.FC_UTIL.mountSidebar({ active: 'perfil', user: session });
+    window.FC_UTIL.mountBottomNav('perfil');
+    window.FC_UTIL.mountTopbar({ title: 'Mi perfil', user: session });
+
+    const paciente = await window.FC_DB.findPacienteByUsuario(session.userId);
+    if (!paciente) {
+      document.getElementById('profileName').textContent = 'Sin datos';
+      return;
+    }
+
+    const ini = `${paciente.nombre[0] || ''}${paciente.apellido[0] || ''}`.toUpperCase();
+    document.getElementById('profileAvatar').textContent = ini;
+    document.getElementById('profileName').textContent = `${paciente.nombre} ${paciente.apellido}`;
+    document.getElementById('profileEmail').textContent = session.email;
+    document.getElementById('pDni').textContent = paciente.dni || '—';
+    document.getElementById('pFecha').textContent = paciente.fechaNacimiento
+      ? new Date(paciente.fechaNacimiento + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' })
+      : '—';
+    document.getElementById('pObra').textContent = paciente.obraSocial || '—';
+    document.getElementById('pTel').textContent = paciente.telefono || '—';
+    document.getElementById('pEmail').textContent = session.email;
+
+    // Los botones (Editar, Cerrar sesión de la página)
+    // quedan bloqueados por lock-ui.js. El logout del sidebar sigue funcionando.
+  })();
+</script>
+</body>
+</html>

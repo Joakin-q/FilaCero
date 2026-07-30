@@ -1,16 +1,66 @@
-/* css/variables.css */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
-
 :root {
-    /* Paleta de colores basada en el diseño */
-    --bg-cream: #f7f4d4;
-    --primary-green: #104a32;
-    --accent-light-green: #e2ead6;
-    --accent-light-blue: #e2f0f9;
-    --accent-pink: #f6e6e6;
-    --text-dark: #1b2a22;
-    --text-muted: #738078;
-    
-    /* Tipografía */
-    --font-main: 'Nunito', sans-serif;
+  /* ===== Paleta FilaCero (móvil) ===== */
+  --color-bg: #F7F3E6;
+  --color-header-green-1: #1E3A2E;
+  --color-header-green-2: #16302A;
+  --color-white: #FFFFFF;
+  --color-text-dark: #1C2B22;
+  --color-text-muted: #6B7A70;
+  --color-text-inverse: #F5F1E4;
+  --color-text-inverse-muted: #B9C8BC;
+
+  --color-card-bg: #FFFFFF;
+  --color-pill-bg: #FFFFFF;
+  --color-pill-active-bg: #1E3A2E;
+
+  /* Avatares / especialidades */
+  --avatar-blue-bg: #D9E6F5;  --avatar-blue-fg: #2F5C99;
+  --avatar-green-bg: #DCEBD9; --avatar-green-fg: #3D7A4D;
+  --avatar-cream-bg: #F3E7C9; --avatar-cream-fg: #8A6D1E;
+  --avatar-pink-bg: #F6DCE0;  --avatar-pink-fg: #B14D5E;
+  --avatar-teal-bg: #D7EAE7;  --avatar-teal-fg: #2E7A6E;
+  --avatar-violet-bg: #E8DFF5; --avatar-violet-fg: #6B4D9E;
+
+  /* Estados */
+  --status-confirmado: #2F9E5B;
+  --status-proximo: #2F6FED;
+  --status-asistido: #2F9E5B;
+  --status-cancelado: #E0524C;
+
+  --danger: #E0524C;
+  --warning: #D99316;
+  --success: #2F9E5B;
+
+  --primary: #1E3A2E;
+  --primary-hover: #16302A;
+  --primary-light: #DCEBD9;
+  --accent: #2F6FED;
+  --accent-hover: #1E54C8;
+
+  /* Radios */
+  --radius-xl: 28px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+
+  /* Sombras */
+  --shadow-card: 0 2px 10px rgba(28, 43, 34, 0.06);
+  --shadow-header: 0 6px 18px rgba(20, 40, 30, 0.18);
+  --shadow-md: 0 4px 14px rgba(28, 43, 34, 0.08);
+  --shadow-lg: 0 12px 40px rgba(28, 43, 34, 0.12);
+
+  /* Tipografía */
+  --font-display: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+
+  /* Layout móvil */
+  --max-width-mobile: 420px;
+  --sidebar-width: 240px;
+  --sidebar-collapsed: 64px;
+  --header-height: 64px;
+
+  /* Transiciones */
+  --transition-fast: 150ms ease;
+  --transition-base: 220ms cubic-bezier(.4,0,.2,1);
 }

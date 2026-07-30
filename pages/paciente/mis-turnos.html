@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1E3A2E">
+  <link rel="manifest" href="../../manifest.json">
+  <link rel="icon" type="image/jpeg" href="../../assets/images/logo.jpeg">
+  <title>Mis Turnos · FilaCero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/variables.css">
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/paciente.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <aside class="desktop-sidebar" id="fc-sidebar"></aside>
+  <div class="desktop-main">
+    <header class="desktop-topbar" id="fc-topbar"></header>
+
+    <main class="desktop-content">
+      <div class="desktop-content-inner">
+
+        <header class="mobile-header">
+          <div class="mobile-header__top">
+            <div class="brand-tag">
+              <img src="../../assets/images/logo.jpeg" alt="FilaCero">
+              FILACERO
+            </div>
+          </div>
+          <h1>Mis Turnos</h1>
+          <p>Consultá tus próximos turnos y el historial de consultas médicas.</p>
+        </header>
+
+        <div class="stats-row">
+          <div class="stat-card"><strong id="statTotal">0</strong><span>Total</span></div>
+          <div class="stat-card"><strong id="statProximos">0</strong><span>Próximos</span></div>
+          <div class="stat-card"><strong id="statFinalizados">0</strong><span>Finalizados</span></div>
+          <div class="stat-card"><strong id="statCancelados">0</strong><span>Cancelados</span></div>
+        </div>
+
+        <div class="search-bar">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="searchInput" placeholder="Buscar por especialidad, médico o fecha...">
+        </div>
+
+        <div class="filter-tabs" id="filterTabs">
+          <button class="filter-tab is-active" data-filter="todos">Todos</button>
+          <button class="filter-tab" data-filter="proximos">Próximos</button>
+          <button class="filter-tab" data-filter="confirmados">Confirmados</button>
+          <button class="filter-tab" data-filter="finalizados">Finalizados</button>
+          <button class="filter-tab" data-filter="cancelados">Cancelados</button>
+        </div>
+
+        <div class="turnos-list" id="turnosList"></div>
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" id="fc-bottom-nav"></nav>
+</div>
+
+<div class="modal-backdrop" id="fc-modal"></div>
+
+<script src="../../js/config.js"></script>
+<script src="../../js/data/db.js"></script>
+<script src="../../js/auth/auth.js"></script>
+<script src="../../js/utils/utils.js"></script>
+<script src="../../js/paciente/mis-turnos.js"></script>
+<script src="../../js/utils/lock-ui.js"></script>
+</body>
+</html>

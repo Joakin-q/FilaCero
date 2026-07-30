@@ -1,0 +1,27 @@
+{
+  "name": "FilaCero — Gestión de turnos médicos",
+  "short_name": "FilaCero",
+  "description": "Reservá, reprogramá y cancelá turnos médicos sin filas ni esperas.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F7F3E6",
+  "theme_color": "#1E3A2E",
+  "lang": "es-AR",
+  "icons": [
+    {
+      "src": "assets/images/logo.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/logo.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["medical", "health", "productivity"]
+}

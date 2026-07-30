@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1E3A2E">
+  <link rel="manifest" href="../../manifest.json">
+  <link rel="icon" type="image/jpeg" href="../../assets/images/logo.jpeg">
+  <title>Recuperar contraseña · FilaCero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/variables.css">
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/auth.css">
+</head>
+<body>
+
+<div class="auth-screen">
+  <div class="auth-panel">
+    <div style="width: 100%; max-width: 380px;">
+      <a class="back-link" href="login.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Volver al login
+      </a>
+      <div class="auth-logo">
+        <img src="../../assets/images/logo.jpeg" alt="FilaCero">
+        <div class="name">FilaCero</div>
+      </div>
+
+      <div class="auth-card">
+        <h2>Recuperar contraseña</h2>
+        <p class="subtitle">Te enviaremos un email con instrucciones para restablecerla.</p>
+
+        <div class="auth-error" id="authError"></div>
+        <div class="auth-success" id="authSuccess"></div>
+
+        <form id="recoverForm" autocomplete="on">
+          <div class="field">
+            <label for="email">Correo electrónico</label>
+            <input id="email" type="email" required autocomplete="email" placeholder="tu@correo.com">
+          </div>
+
+          <button class="btn btn-primary btn-block" type="submit">Enviar instrucciones</button>
+        </form>
+
+        <div class="auth-foot" style="margin-top: 14px;">
+          <a href="login.html">Volver al inicio de sesión</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="fc-modal"></div>
+
+<script src="../../js/config.js"></script>
+<script src="../../js/data/db.js"></script>
+<script src="../../js/auth/auth.js"></script>
+<script src="../../js/utils/utils.js"></script>
+<script src="../../js/utils/lock-ui.js"></script>
+<script>
+  // El form submit queda bloqueado por lock-ui.js.
+  // Capturamos con prioridad para mostrar modal en vez de toast.
+  document.getElementById('recoverForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    window.FC_UTIL.showModal({
+      icon: 'success',
+      title: 'Recuperación deshabilitada',
+      message: 'El envío de email no está activo en esta versión.',
+      confirmText: 'Entendido'
+    });
+  }, true);
+</script>
+</body>
+</html>

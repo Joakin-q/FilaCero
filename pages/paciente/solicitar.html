@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1E3A2E">
+  <link rel="manifest" href="../../manifest.json">
+  <link rel="icon" type="image/jpeg" href="../../assets/images/logo.jpeg">
+  <title>Pedir turno · FilaCero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/variables.css">
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/paciente.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- Sidebar desktop (oculto en móvil) -->
+  <aside class="desktop-sidebar" id="fc-sidebar"></aside>
+
+  <!-- Main wrapper -->
+  <div class="desktop-main">
+    <!-- Topbar desktop -->
+    <header class="desktop-topbar" id="fc-topbar"></header>
+
+    <!-- Contenido -->
+    <main class="desktop-content">
+      <div class="desktop-content-inner">
+
+        <!-- Header móvil -->
+        <header class="mobile-header">
+          <div class="mobile-header__top">
+            <div class="brand-tag">
+              <img src="../../assets/images/logo.jpeg" alt="FilaCero">
+              FILACERO
+            </div>
+            <span class="back-link" style="color: var(--color-text-inverse-muted); cursor: default;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              Volver
+            </span>
+          </div>
+          <h1>Pedir turno</h1>
+          <p>Seleccioná la especialidad, médico, fecha y horario que mejor te quede.</p>
+        </header>
+
+        <!-- Indicador de pasos -->
+        <div class="wizard-wrap" style="padding-top: 32px;">
+          <div class="step-indicator" id="stepIndicator">
+            <div class="step is-active" data-step="1"><div class="dot">1</div><div class="label">Especialidad</div></div>
+            <div class="step" data-step="2"><div class="dot">2</div><div class="label">Médico</div></div>
+            <div class="step" data-step="3"><div class="dot">3</div><div class="label">Fecha</div></div>
+            <div class="step" data-step="4"><div class="dot">4</div><div class="label">Horario</div></div>
+            <div class="step" data-step="5"><div class="dot">5</div><div class="label">Confirmar</div></div>
+          </div>
+
+          <!-- Paso 1: Especialidad -->
+          <section class="wizard-step" data-step-section="1">
+            <h2>¿Qué necesitás?</h2>
+            <p class="subtitle">Elegí la especialidad médica de tu consulta.</p>
+            <div class="option-list" id="especialidadesList"></div>
+          </section>
+
+          <!-- Paso 2: Médico -->
+          <section class="wizard-step" data-step-section="2" style="display: none;">
+            <h2>Elegí un profesional</h2>
+            <p class="subtitle">Médicos disponibles en la especialidad seleccionada.</p>
+            <div class="option-list" id="medicosList"></div>
+          </section>
+
+          <!-- Paso 3: Fecha -->
+          <section class="wizard-step" data-step-section="3" style="display: none;">
+            <h2>Elegí una fecha</h2>
+            <p class="subtitle">Días disponibles para este profesional.</p>
+            <div class="calendar" id="calendar"></div>
+          </section>
+
+          <!-- Paso 4: Horario -->
+          <section class="wizard-step" data-step-section="4" style="display: none;">
+            <h2>Elegí un horario</h2>
+            <p class="subtitle">Horarios libres para el día seleccionado.</p>
+            <div class="times-grid" id="timesGrid"></div>
+          </section>
+
+          <!-- Paso 5: Confirmar -->
+          <section class="wizard-step" data-step-section="5" style="display: none;">
+            <h2>Confirmá tu turno</h2>
+            <p class="subtitle">Revisá los detalles antes de confirmar.</p>
+            <div class="confirm-card" id="confirmCard"></div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Nav inferior móvil -->
+  <nav class="bottom-nav" id="fc-bottom-nav"></nav>
+</div>
+
+<!-- Nav inferior móvil con botones del wizard -->
+<div class="wizard-nav" id="wizardNav">
+  <button class="btn btn-back" id="btnBack" style="display: none;">Atrás</button>
+  <button class="btn btn-primary" id="btnNext" disabled>Siguiente</button>
+</div>
+
+<div class="modal-backdrop" id="fc-modal"></div>
+
+<script src="../../js/config.js"></script>
+<script src="../../js/data/db.js"></script>
+<script src="../../js/auth/auth.js"></script>
+<script src="../../js/utils/utils.js"></script>
+<script src="../../js/paciente/solicitar.js"></script>
+<script src="../../js/utils/lock-ui.js"></script>
+</body>
+</html>

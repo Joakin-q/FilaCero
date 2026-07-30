@@ -1,101 +1,187 @@
-/* Estilo general para la página de autenticación */
-.login-body {
-    font-family: 'Nunito', sans-serif;
-    background-color: #f7f4d4; /* Color crema */
+/* =========================================
+   AUTH — Login, Registro, Recuperar
+   ========================================= */
+
+.auth-screen {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px;
+}
+
+.auth-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  margin-bottom: 28px;
+}
+.auth-logo img { height: 96px; }
+.auth-logo .name {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-header-green-1);
+}
+.auth-logo .tagline {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  text-align: center;
+  max-width: 280px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 28px 24px;
+  box-shadow: var(--shadow-md);
+}
+
+.auth-card h2 {
+  font-size: 1.25rem;
+  margin-bottom: 6px;
+  text-align: center;
+}
+.auth-card .subtitle {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.auth-card .btn-block { margin-top: 12px; }
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(28, 43, 34, 0.12);
+}
+
+.auth-foot {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+.auth-foot a {
+  color: var(--color-header-green-1);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-error {
+  background: rgba(224, 82, 76, 0.10);
+  color: var(--danger);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  margin-bottom: 14px;
+  display: none;
+}
+.auth-error.is-visible { display: block; }
+
+.auth-success {
+  background: rgba(47, 158, 91, 0.10);
+  color: var(--success);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  margin-bottom: 14px;
+  display: none;
+}
+.auth-success.is-visible { display: block; }
+
+/* Enlace volver */
+.back-link {
+  align-self: flex-start;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.back-link:hover { color: var(--color-header-green-1); }
+
+/* ===== Desktop: centrar auth ===== */
+@media (min-width: 1024px) {
+  .auth-screen {
+    flex-direction: row;
+    align-items: stretch;
+    padding: 0;
+  }
+  .auth-hero {
+    flex: 1;
+    background: linear-gradient(160deg, var(--color-header-green-1), var(--color-header-green-2));
+    color: var(--color-text-inverse);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
-}
-
-/* La tarjeta central */
-.login-container {
-    background: #ffffff;
-    padding: 2.5rem;
-    border-radius: 45px; /* Bordes redondeados modernos */
-    width: 90%;
-    max-width: 420px;
+    padding: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .auth-hero::before,
+  .auth-hero::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .auth-hero::before {
+    width: 500px; height: 500px;
+    top: -200px; left: -200px;
+  }
+  .auth-hero::after {
+    width: 300px; height: 300px;
+    bottom: -100px; right: -100px;
+  }
+  .auth-hero .hero-inner {
+    position: relative;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-}
-
-.logo-box img { width: 80px; margin-bottom: 1.5rem; }
-
-h2 { color: #104a32; font-size: 1.6rem; margin-bottom: 0.5rem; }
-.subtitle { color: #888; margin-bottom: 2rem; font-size: 0.9rem; }
-
-.field { margin-bottom: 1rem; }
-.field input {
-    width: 100%;
-    padding: 18px 20px;
-    background: #fdfdfd;
-    border: 2px solid #f0f0f0;
-    border-radius: 25px;
-    font-size: 1rem;
-    outline: none;
-    transition: 0.3s;
-}
-
-.field input:focus { border-color: #104a32; }
-
-.btn-main {
-    width: 100%;
-    padding: 18px;
-    border: none;
-    border-radius: 25px;
-    background: #104a32;
-    color: white;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 1rem;
-}
-
-.link-register {
-    display: block;
-    margin-top: 20px;
-    color: #104a32;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-/* Ajuste fino para PC (pantallas más grandes) */
-@media (min-width: 768px) {
-    .login-container { padding: 3.5rem; max-width: 450px; }
-}
-
-/* Tarjeta para el formulario dentro del dashboard */
-.turno-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 40px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    max-width: 500px;
-    margin: 20px auto;
-}
-
-.field label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #104a32;
-    margin-left: 10px;
-}
-
-.field select, .field input {
-    width: 100%;
-    padding: 16px 20px;
-    background: #fcfcfc;
-    border: 2px solid #f0f0f0;
-    border-radius: 25px; /* Bordes burbuja */
-    font-family: 'Nunito', sans-serif;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-}
-
-.field select:focus, .field input:focus {
-    border-color: #104a32;
-    outline: none;
+    max-width: 380px;
+  }
+  .auth-hero img {
+    height: 120px;
+    margin: 0 auto 24px;
+  }
+  .auth-hero h1 {
+    color: var(--color-text-inverse);
+    font-size: 2rem;
+    margin-bottom: 12px;
+  }
+  .auth-hero p {
+    color: var(--color-text-inverse-muted);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .auth-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+  .auth-card {
+    max-width: 420px;
+    box-shadow: none;
+    padding: 36px 32px;
+  }
 }

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1E3A2E">
+  <meta name="description" content="Iniciá sesión en FilaCero para gestionar tus turnos médicos.">
+  <link rel="manifest" href="../../manifest.json">
+  <link rel="icon" type="image/jpeg" href="../../assets/images/logo.jpeg">
+  <title>Iniciar sesión · FilaCero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/variables.css">
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/auth.css">
+</head>
+<body>
+
+<div class="auth-screen">
+  <div class="auth-panel">
+    <div style="width: 100%; max-width: 380px;">
+      <a class="back-link" href="../../index.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Volver
+      </a>
+      <div class="auth-logo">
+        <img src="../../assets/images/logo.jpeg" alt="FilaCero">
+        <div class="name">FilaCero</div>
+      </div>
+
+      <div class="auth-card">
+        <h2>Bienvenido de nuevo</h2>
+        <p class="subtitle">Ingresá con tu cuenta para gestionar tus turnos.</p>
+
+        <div class="auth-error" id="authError"></div>
+
+        <form id="loginForm" autocomplete="on">
+          <div class="field">
+            <label for="email">Correo electrónico</label>
+            <input id="email" name="email" type="email" required autocomplete="email" placeholder="tu@correo.com">
+          </div>
+          <div class="field">
+            <label for="password">Contraseña</label>
+            <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="••••••••" minlength="4">
+          </div>
+
+          <button class="btn btn-primary btn-block" type="submit">Iniciar sesión</button>
+        </form>
+
+        <div class="auth-foot">
+          <a href="recuperar.html">¿Olvidaste tu contraseña?</a>
+        </div>
+        <div class="auth-foot" style="margin-top: 12px;">
+          ¿No tenés cuenta? <a href="registro.html">Registrate</a>
+        </div>
+
+        <div class="auth-divider">Cuentas de prueba</div>
+        <div style="font-size: 12px; color: var(--color-text-muted); line-height: 1.7;">
+          <strong>Paciente:</strong> juan@demo.com / demo1234<br>
+          <strong>Admin:</strong> admin@filacero.app / admin123
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal genérico -->
+<div class="modal-backdrop" id="fc-modal"></div>
+
+<script src="../../js/config.js"></script>
+<script src="../../js/data/db.js"></script>
+<script src="../../js/auth/auth.js"></script>
+<script src="../../js/utils/utils.js"></script>
+<!-- lock-ui NO se incluye en login: el submit del login debe funcionar -->
+<script>
+  const form = document.getElementById('loginForm');
+  const errorBox = document.getElementById('authError');
+
+  // Si ya hay sesión activa, redirigir
+  const s = window.FC_AUTH.getSession();
+  if (s) {
+    window.location.href = s.rol === 'admin'
+      ? '../admin/dashboard.html'
+      : '../paciente/inicio.html';
+  }
+
+  function showError(msg) {
+    errorBox.textContent = msg;
+    errorBox.classList.add('is-visible');
+  }
+  function clearError() {
+    errorBox.classList.remove('is-visible');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearError();
+    const email = form.email.value.trim();
+    const password = form.password.value;
+
+    try {
+      const session = await window.FC_AUTH.login(email, password);
+      window.location.href = session.rol === 'admin'
+        ? '../admin/dashboard.html'
+        : '../paciente/inicio.html';
+    } catch (err) {
+      const messages = {
+        'EMAIL_NO_ENCONTRADO': 'No existe una cuenta con ese correo.',
+        'PASSWORD_INCORRECTO': 'La contraseña es incorrecta.'
+      };
+      showError(messages[err.message] || 'Error al iniciar sesión. Intentá de nuevo.');
+    }
+  });
+</script>
+</body>
+</html>
