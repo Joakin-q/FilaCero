@@ -1,12 +1,12 @@
-// 1. Registro del Service Worker para la PWA
+// Registro del Service Worker para transformar la web en una PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js')
             .then(registration => {
-                console.log('ServiceWorker registrado con éxito:', registration.scope);
+                console.log('ServiceWorker registrado con éxito con el scope:', registration.scope);
             })
             .catch(error => {
-                console.log('Error al registrar el ServiceWorker:', error);
+                console.error('Error al registrar el ServiceWorker:', error);
             });
     });
 }

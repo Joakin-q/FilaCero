@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitar Turno | FilaCero</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/auth.css"> 
+    <link rel="stylesheet" href="../../css/solicitar-turnos.css">
+</head>
+<body class="dashboard-body">
+    <div class="page-container">
+        <header class="header">
+            <h2>Solicitar Turno</h2>
+            <p>Completá los datos para reservar tu lugar</p>
+        </header>
+
+        <form id="turnoForm" class="turno-card">
+            <div class="field">
+                <label>Especialidad</label>
+                <select id="especialidad" required>
+                    <option value="">Selecciona...</option>
+                    <option value="medicina-general">Medicina General</option>
+                    <option value="pediatria">Pediatría</option>
+                    <option value="odontologia">Odontología</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Profesional</label>
+                <select id="profesional" required>
+                    <option value="">Selecciona profesional...</option>
+                    <option value="">Doc. Pinneda</option>
+                    <option value="">Doc. Bernal</option>
+                    <option value="">Doc. Mihaled</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Fecha</label>
+                <input type="date" id="fecha" required>
+            </div>
+
+            <div class="field">
+                <label>Hora</label>
+                <input type="time" id="hora" required>
+            </div>
+
+            <button type="submit" class="btn-main">Confirmar Turno</button>
+        </form>
+    </div>
+    <aside class="sidebar">
+    <div class="sidebar-header">
+        <h3>FilaCero</h3>
+    </div>
+    
+    <nav class="sidebar-menu">
+        <a href="pedir-turno.html" class="nav-item">
+            <span class="icon">📅</span> Pedir Turno
+        </a>
+        <a href="mis-turnos.html" class="nav-item">
+            <span class="icon">📋</span> Mis Turnos
+        </a>
+        <a href="perfil.html" class="nav-item">
+            <span class="icon">👤</span> Mi Perfil
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="logout.html" class="nav-item logout">
+            <span class="icon">🚪</span> Cerrar Sesión
+        </a>
+    </div>
+</aside>
+    <script src="../js/turnos.js"></script>
+</body>
+</html>

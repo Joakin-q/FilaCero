@@ -1,167 +1,101 @@
-/* ==========================================
-   RESET Y ESTILOS GENERALES
-   ========================================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-body {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    min-height: 100vh;
+/* Estilo general para la página de autenticación */
+.login-body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #f7f4d4; /* Color crema */
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    min-height: 100vh;
+    margin: 0;
 }
 
-/* ==========================================
-   CONTENEDOR Y TARJETA
-   ========================================== */
-.container {
-    width: 100%;
-    max-width: 420px;
-}
-
-.card {
+/* La tarjeta central */
+.login-container {
     background: #ffffff;
-    padding: 40px 30px;
-    border-radius: 16px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    padding: 2.5rem;
+    border-radius: 45px; /* Bordes redondeados modernos */
+    width: 90%;
+    max-width: 420px;
     text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
-/* Encabezados */
-.card h1 {
-    color: #0f172a;
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-}
+.logo-box img { width: 80px; margin-bottom: 1.5rem; }
 
-.card p {
-    color: #64748b;
-    font-size: 0.95rem;
-    margin-bottom: 25px;
-}
+h2 { color: #104a32; font-size: 1.6rem; margin-bottom: 0.5rem; }
+.subtitle { color: #888; margin-bottom: 2rem; font-size: 0.9rem; }
 
-/* ==========================================
-   CAMPOS DE ENTRADA (INPUTS)
-   ========================================== */
-.input-box {
-    position: relative;
-    margin-bottom: 18px;
-    display: flex;
-    align-items: center;
-}
-
-.input-box i {
-    position: absolute;
-    left: 14px;
-    color: #94a3b8;
-    font-size: 1.1rem;
-    transition: color 0.3s ease;
-}
-
-.input-box input {
+.field { margin-bottom: 1rem; }
+.field input {
     width: 100%;
-    padding: 12px 42px;
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    color: #1e293b;
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.input-box input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-}
-
-.input-box input:focus + i,
-.input-box input:focus ~ i {
-    color: #2563eb;
-}
-
-/* Ojo para mostrar/ocultar contraseña */
-.input-box i.eye {
-    left: auto;
-    right: 14px;
-    cursor: pointer;
-}
-
-.input-box i.eye:hover {
-    color: #1e293b;
-}
-
-/* ==========================================
-   BOTONES Y ENLACES
-   ========================================== */
-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #2563eb;
-    color: #ffffff;
-    border: none;
-    border-radius: 10px;
+    padding: 18px 20px;
+    background: #fdfdfd;
+    border: 2px solid #f0f0f0;
+    border-radius: 25px;
     font-size: 1rem;
-    font-weight: 600;
+    outline: none;
+    transition: 0.3s;
+}
+
+.field input:focus { border-color: #104a32; }
+
+.btn-main {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 25px;
+    background: #104a32;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.1s ease;
-    margin-top: 5px;
+    margin-top: 1rem;
 }
 
-button:hover {
-    background-color: #1d4ed8;
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-a#forgotPassword {
-    display: inline-block;
-    margin-top: 15px;
-    color: #2563eb;
-    font-size: 0.85rem;
+.link-register {
+    display: block;
+    margin-top: 20px;
+    color: #104a32;
     text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s ease;
-}
-
-a#forgotPassword:hover {
-    color: #1d4ed8;
-    text-decoration: underline;
-}
-
-hr {
-    border: 0;
-    height: 1px;
-    background: #e2e8f0;
-    margin: 25px 0 20px 0;
-}
-
-/* Cambiar entre login y registro */
-span#showRegister,
-span#showLogin {
-    color: #2563eb;
     font-weight: 600;
-    cursor: pointer;
-    transition: color 0.2s ease;
+    font-size: 0.9rem;
 }
 
-span#showRegister:hover,
-span#showLogin:hover {
-    color: #1d4ed8;
-    text-decoration: underline;
+/* Ajuste fino para PC (pantallas más grandes) */
+@media (min-width: 768px) {
+    .login-container { padding: 3.5rem; max-width: 450px; }
 }
 
-/* ==========================================
-   UTILIDADES
-   ========================================== */
-.hidden {
-    display: none !important;
+/* Tarjeta para el formulario dentro del dashboard */
+.turno-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #104a32;
+    margin-left: 10px;
+}
+
+.field select, .field input {
+    width: 100%;
+    padding: 16px 20px;
+    background: #fcfcfc;
+    border: 2px solid #f0f0f0;
+    border-radius: 25px; /* Bordes burbuja */
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.field select:focus, .field input:focus {
+    border-color: #104a32;
+    outline: none;
 }
