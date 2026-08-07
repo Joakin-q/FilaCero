@@ -67,6 +67,13 @@
       return session;
     },
 
+    /** Devuelve la ruta de inicio según el rol del usuario */
+    homePath() {
+      const s = getSession();
+      if (!s) return '../auth/login.html';
+      return s.rol === 'admin' ? '../admin/dashboard.html' : '../paciente/inicio.html';
+    },
+
     /** Registro deshabilitado */
     async registerPaciente() {
       throw new Error('Registro deshabilitado en esta versión');
@@ -85,3 +92,6 @@
   window.FC_AUTH = Auth;
   window.FC_SESSION = getSession();
 })();
+
+// Redirección post-login: si la página no pidió redirección explícita,
+// dejamos que el caller (login.html) navegue según rol.

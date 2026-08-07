@@ -4,7 +4,7 @@
  * Estrategia: cache-first para assets estáticos, network-first para navegación.
  * Si el usuario está offline, sirve el index.html cacheado.
  */
-const CACHE = 'filacero-v1';
+const CACHE = 'filacero-v2';
 const PRECACHE = [
   './',
   './index.html',
@@ -13,10 +13,13 @@ const PRECACHE = [
   './css/main.css',
   './css/auth.css',
   './css/paciente.css',
+  './css/admin.css',
   './js/config.js',
   './js/data/db.js',
+  './js/data/repository.js',
   './js/auth/auth.js',
   './js/utils/utils.js',
+  './js/utils/lock-ui.js',
   './js/paciente/solicitar.js',
   './js/paciente/mis-turnos.js',
   './pages/auth/login.html',
@@ -27,6 +30,20 @@ const PRECACHE = [
   './pages/paciente/mis-turnos.html',
   './pages/paciente/perfil.html',
   './pages/paciente/avisos.html',
+  './pages/admin/dashboard.html',
+  './js/admin/dashboard.js',
+  './pages/admin/medicos.html',
+  './js/admin/medicos.js',
+  './pages/admin/especialidades.html',
+  './js/admin/especialidades.js',
+  './pages/admin/horarios.html',
+  './js/admin/horarios.js',
+  './pages/admin/turnos.html',
+  './js/admin/turnos.js',
+  './pages/admin/pacientes.html',
+  './js/admin/pacientes.js',
+  './pages/admin/configuracion.html',
+  './js/admin/configuracion.js',
   './assets/images/logo.jpeg'
 ];
 

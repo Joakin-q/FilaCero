@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1E3A2E">
+  <link rel="manifest" href="../../manifest.json">
+  <link rel="icon" type="image/jpeg" href="../../assets/images/logo.jpeg">
+  <title>Médicos · FilaCero Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/variables.css">
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/admin.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <aside class="desktop-sidebar" id="fc-sidebar"></aside>
+
+  <div class="desktop-main">
+    <header class="desktop-topbar" id="fc-topbar"></header>
+
+    <main class="desktop-content">
+      <div class="desktop-content-inner">
+
+        <div class="admin-page">
+          <div class="admin-page-header">
+            <div>
+              <h1>Médicos</h1>
+              <p>Gestioná el equipo profesional del centro.</p>
+            </div>
+            <button class="btn btn-primary" id="btnNuevo">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              Nuevo médico
+            </button>
+          </div>
+
+          <div class="admin-toolbar">
+            <div class="admin-toolbar-left">
+              <div class="field" style="min-width:220px;">
+                <input id="searchInput" placeholder="Buscar por nombre o matrícula…">
+              </div>
+              <div class="field">
+                <select id="filterEsp">
+                  <option value="">Todas las especialidades</option>
+                </select>
+              </div>
+              <div class="field">
+                <select id="filterEstado">
+                  <option value="">Todos</option>
+                  <option value="activo">Activos</option>
+                  <option value="inactivo">Inactivos</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Profesional</th>
+                  <th>Matrícula</th>
+                  <th>Especialidad</th>
+                  <th>Teléfono</th>
+                  <th>Estado</th>
+                  <th style="text-align:right;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="medicosBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" id="fc-bottom-nav"></nav>
+</div>
+
+<div class="modal-backdrop" id="fc-modal"></div>
+
+<script src="../../js/config.js"></script>
+<script src="../../js/data/repository.js"></script>
+<script src="../../js/auth/auth.js"></script>
+<script src="../../js/utils/utils.js"></script>
+<script src="../../js/admin/medicos.js"></script>
+</body>
+</html>

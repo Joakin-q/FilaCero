@@ -67,18 +67,10 @@
   }
 
   /** Inyecta sidebar desktop en cualquier página */
-  function mountSidebar({ active = 'inicio', user }) {
+  function mountSidebar({ active = 'inicio', user, rol = 'paciente' }) {
     const sidebar = document.getElementById('fc-sidebar');
     if (!sidebar) return;
-    const links = [
-      { id: 'inicio',     label: 'Inicio',         href: 'inicio.html',       icon: 'home' },
-      { id: 'pedir',       label: 'Pedir turno',    href: 'solicitar.html',    icon: 'plus' },
-      { id: 'turnos',      label: 'Mis turnos',     href: 'mis-turnos.html',   icon: 'calendar' },
-      { id: 'historial',   label: 'Historial',      href: 'mis-turnos.html',   icon: 'clock' },
-      { id: 'avisos',      label: 'Notificaciones', href: 'avisos.html',       icon: 'bell' },
-      { id: 'perfil',      label: 'Perfil',         href: 'perfil.html',       icon: 'user' },
-      { id: 'config',      label: 'Configuración',  href: 'config.html',       icon: 'gear' }
-    ];
+    const links = rol === 'admin' ? _adminLinks() : _pacienteLinks();
     sidebar.innerHTML = `
       <button class="sidebar-toggle" id="fc-sidebar-toggle" aria-label="Colapsar menú">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -89,10 +81,10 @@
         <img src="../../assets/images/logo.jpeg" alt="FilaCero">
         <span class="brand-text">FilaCero</span>
       </div>
-      <div class="sidebar-section">Principal</div>
-      ${links.slice(0, 5).map(l => _sidebarLink(l, active)).join('')}
-      <div class="sidebar-section">Cuenta</div>
-      ${links.slice(5).map(l => _sidebarLink(l, active)).join('')}
+      ${links.map(group => `
+        <div class="sidebar-section">${group.title}</div>
+        ${group.items.map(l => _sidebarLink(l, active)).join('')}
+      `).join('')}
       <div class="sidebar-footer">
         <a class="sidebar-link" data-action="logout">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -115,6 +107,55 @@
     });
   }
 
+  function _pacienteLinks() {
+    return [
+      {
+        title: 'Principal',
+        items: [
+          { id: 'inicio',     label: 'Inicio',         href: '../paciente/inicio.html',     icon: 'home' },
+          { id: 'pedir',      label: 'Pedir turno',    href: '../paciente/solicitar.html',  icon: 'plus' },
+          { id: 'turnos',     label: 'Mis turnos',     href: '../paciente/mis-turnos.html', icon: 'calendar' },
+          { id: 'historial',  label: 'Historial',      href: '../paciente/mis-turnos.html', icon: 'clock' },
+          { id: 'avisos',     label: 'Notificaciones', href: '../paciente/avisos.html',     icon: 'bell' }
+        ]
+      },
+      {
+        title: 'Cuenta',
+        items: [
+          { id: 'perfil', label: 'Perfil',        href: '../paciente/perfil.html', icon: 'user' },
+          { id: 'config', label: 'Configuración', href: '#',                       icon: 'gear' }
+        ]
+      }
+    ];
+  }
+
+  function _adminLinks() {
+    return [
+      {
+        title: 'Panel',
+        items: [
+          { id: 'dashboard', label: 'Dashboard', href: 'dashboard.html', icon: 'home' }
+        ]
+      },
+      {
+        title: 'Gestión',
+        items: [
+          { id: 'medicos',        label: 'Médicos',        href: 'medicos.html',        icon: 'user' },
+          { id: 'especialidades', label: 'Especialidades', href: 'especialidades.html', icon: 'list' },
+          { id: 'horarios',       label: 'Horarios',       href: 'horarios.html',       icon: 'clock' },
+          { id: 'turnos',         label: 'Turnos',         href: 'turnos.html',         icon: 'calendar' },
+          { id: 'pacientes',      label: 'Pacientes',      href: 'pacientes.html',      icon: 'users' }
+        ]
+      },
+      {
+        title: 'Sistema',
+        items: [
+          { id: 'config', label: 'Configuración', href: 'configuracion.html', icon: 'gear' }
+        ]
+      }
+    ];
+  }
+
   function _sidebarLink(link, active) {
     const icons = {
       home:    '<path d="m3 11 9-8 9 8M5 10v10h14V10"/>',
@@ -123,6 +164,8 @@
       clock:   '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
       bell:    '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>',
       user:    '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>',
+      users:   '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+      list:    '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
       gear:    '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>'
     };
     return `
@@ -197,6 +240,23 @@
     formatFechaCorta, formatFechaLarga,
     avatarClassByEspecialidad,
     showModal,
-    mountSidebar, mountBottomNav, mountTopbar
+    mountSidebar, mountBottomNav, mountTopbar,
+    adminToast
   };
+
+  /** Toast flotante para feedback del admin */
+  let _toastTimer;
+  function adminToast(message, type = 'success') {
+    let t = document.getElementById('admin-toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'admin-toast';
+      t.className = 'admin-toast';
+      document.body.appendChild(t);
+    }
+    t.className = `admin-toast admin-toast--${type} is-visible`;
+    t.textContent = message;
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(() => t.classList.remove('is-visible'), 2400);
+  }
 })();

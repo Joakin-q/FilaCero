@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1E3A2E">
+  <link rel="manifest" href="../../manifest.json">
+  <link rel="icon" type="image/jpeg" href="../../assets/images/logo.jpeg">
+  <title>Horarios · FilaCero Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/variables.css">
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/admin.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <aside class="desktop-sidebar" id="fc-sidebar"></aside>
+
+  <div class="desktop-main">
+    <header class="desktop-topbar" id="fc-topbar"></header>
+
+    <main class="desktop-content">
+      <div class="desktop-content-inner">
+
+        <div class="admin-page">
+          <div class="admin-page-header">
+            <div>
+              <h1>Horarios</h1>
+              <p>Franjas horarias disponibles por médico.</p>
+            </div>
+          </div>
+
+          <div class="admin-toolbar">
+            <div class="admin-toolbar-left">
+              <div class="field" style="min-width:280px;">
+                <select id="medicoSelect">
+                  <option value="">Seleccioná un médico…</option>
+                </select>
+              </div>
+            </div>
+            <div class="admin-toolbar-right">
+              <button class="btn btn-outline" id="btnReset" disabled>Restablecer horario laboral</button>
+            </div>
+          </div>
+
+          <div id="horariosWrap">
+            <div class="admin-empty"><h3>Elegí un profesional</h3><p>Seleccioná un médico de la lista para ver y editar sus horarios.</p></div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" id="fc-bottom-nav"></nav>
+</div>
+
+<div class="modal-backdrop" id="fc-modal"></div>
+
+<script src="../../js/config.js"></script>
+<script src="../../js/data/repository.js"></script>
+<script src="../../js/auth/auth.js"></script>
+<script src="../../js/utils/utils.js"></script>
+<script src="../../js/admin/horarios.js"></script>
+</body>
+</html>

@@ -4,36 +4,116 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#1E3A2E">
-  <title>Dashboard · FilaCero</title>
+  <link rel="manifest" href="../../manifest.json">
+  <link rel="icon" type="image/jpeg" href="../../assets/images/logo.jpeg">
+  <title>Dashboard · FilaCero Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/variables.css">
   <link rel="stylesheet" href="../../css/main.css">
-  <style>
-    body { background: var(--color-bg); }
-    .placeholder {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 24px;
-      text-align: center;
-      gap: 16px;
-    }
-    .placeholder img { width: 100px; }
-    .placeholder h1 { font-size: 1.5rem; color: var(--color-header-green-1); }
-    .placeholder p { color: var(--color-text-muted); max-width: 320px; }
-    .placeholder .btn { margin-top: 8px; }
-  </style>
+  <link rel="stylesheet" href="../../css/admin.css">
 </head>
 <body>
-  <div class="placeholder">
-    <img src="../../assets/images/logo.jpeg" alt="FilaCero">
-    <h1>Panel de administración</h1>
-    <p>Esta sección la desarrolla otro equipo del proyecto. Iniciaste sesión como administrador correctamente.</p>
-    <a class="btn btn-primary" href="../auth/login.html">Volver al login</a>
+
+<div class="app-shell">
+
+  <aside class="desktop-sidebar" id="fc-sidebar"></aside>
+
+  <div class="desktop-main">
+    <header class="desktop-topbar" id="fc-topbar"></header>
+
+    <main class="desktop-content">
+      <div class="desktop-content-inner">
+
+        <div class="admin-page">
+          <div class="admin-page-header">
+            <div>
+              <h1>Dashboard</h1>
+              <p>Resumen general del centro médico.</p>
+            </div>
+            <a href="turnos.html" class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              Nuevo turno
+            </a>
+          </div>
+
+          <!-- Métricas principales -->
+          <div class="metrics-grid">
+            <div class="metric-card metric-card--accent">
+              <div class="metric-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              </div>
+              <div class="metric-label">Turnos de hoy</div>
+              <div class="metric-value" id="mHoy">0</div>
+              <div class="metric-foot" id="mHoyFoot">— programados</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <div class="metric-label">Médicos activos</div>
+              <div class="metric-value" id="mMedicos">0</div>
+              <div class="metric-foot" id="mMedicosFoot">de 0 en el centro</div>
+            </div>
+
+            <div class="metric-card metric-card--warning">
+              <div class="metric-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              </div>
+              <div class="metric-label">Turnos totales</div>
+              <div class="metric-value" id="mTotal">0</div>
+              <div class="metric-foot" id="mTotalFoot">0 próximos · 0 pasados</div>
+            </div>
+
+            <div class="metric-card metric-card--danger">
+              <div class="metric-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </div>
+              <div class="metric-label">Tasa de cancelación</div>
+              <div class="metric-value" id="mCancel">0%</div>
+              <div class="metric-foot" id="mCancelFoot">0 turnos cancelados</div>
+            </div>
+          </div>
+
+          <!-- Fila principal: próximos turnos + turnos por especialidad -->
+          <div class="dashboard-row">
+            <div class="panel">
+              <h2>Próximos turnos</h2>
+              <p class="panel-sub">Los 5 turnos más cercanos.</p>
+              <div class="mini-list" id="proximosList"></div>
+            </div>
+
+            <div class="panel">
+              <h2>Turnos por especialidad</h2>
+              <p class="panel-sub">Distribución histórica completa.</p>
+              <div class="bar-chart" id="espChart"></div>
+            </div>
+          </div>
+
+          <!-- Resumen por estado -->
+          <div class="panel">
+            <h2>Estado de los turnos</h2>
+            <p class="panel-sub">Cómo se reparten los turnos según su estado actual.</p>
+            <div class="bar-chart" id="estadosChart"></div>
+          </div>
+        </div>
+
+      </div>
+    </main>
   </div>
+
+  <nav class="bottom-nav" id="fc-bottom-nav"></nav>
+</div>
+
+<div class="modal-backdrop" id="fc-modal"></div>
+
+<script src="../../js/config.js"></script>
+<script src="../../js/data/db.js"></script>
+<script src="../../js/data/repository.js"></script>
+<script src="../../js/auth/auth.js"></script>
+<script src="../../js/utils/utils.js"></script>
+<script src="../../js/admin/dashboard.js"></script>
 </body>
 </html>

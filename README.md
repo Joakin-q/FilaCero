@@ -1,13 +1,14 @@
 # FilaCero — Versión visual + sidebar + login
 
 Proyecto visual de FilaCero en modo demo.
-**Únicas cosas funcionales:**
+**Funcionalidades implementadas:**
 
 1. **Login** (acepta 2 cuentas demo).
 2. **Menú lateral izquierdo** (sidebar desktop + bottom nav visual) — todos los links navegan.
 3. **Toggle de colapsar** el sidebar.
+4. **Panel de administración** completo (CRUD médicos, especialidades, horarios, turnos, pacientes + configuración del centro + dashboard con métricas). Persistencia en `localStorage` a través de la capa `FC_REPO` lista para migrar a Firebase.
 
-**Todo lo demás está bloqueado.** Cualquier botón fuera del sidebar o de los formularios de auth muestra un toast "Acción deshabilitada".
+Las páginas del paciente siguen bloqueadas (toast "Acción deshabilitada") salvo los formularios de auth, exactamente como en la versión original.
 
 ## 🚀 Cómo abrirlo
 
@@ -51,28 +52,46 @@ Los formularios de Registro y Recuperar contraseña NO funcionan: al enviar, mue
 │   ├── variables.css
 │   ├── main.css                # + estilos de bloqueo animado
 │   ├── auth.css
-│   └── paciente.css
+│   ├── paciente.css
+│   └── admin.css               # estilos panel admin
 ├── js/
-│   ├── config.js               # (no usado, placeholder)
-│   ├── data/db.js              # Devuelve datos estáticos
+│   ├── config.js               # Firebase + config del centro
+│   ├── data/db.js              # Devuelve datos estáticos (paciente)
+│   ├── data/repository.js      # CRUD admin (localStorage hoy, Firebase mañana)
 │   ├── auth/auth.js            # Solo valida 2 cuentas demo
 │   ├── utils/
-│   │   ├── utils.js            # Modales, fechas, sidebar, bottom nav
+│   │   ├── utils.js            # Modales, fechas, sidebar, bottom nav, adminToast
 │   │   └── lock-ui.js          # Bloqueador universal de botones
-│   └── paciente/
-│       ├── solicitar.js        # Wizard visual, confirmar bloqueado
-│       └── mis-turnos.js       # Lista mock, cancelar bloqueado
+│   ├── paciente/
+│   │   ├── solicitar.js        # Wizard visual, confirmar bloqueado
+│   │   └── mis-turnos.js       # Lista mock, cancelar bloqueado
+│   └── admin/
+│       ├── dashboard.js        # Métricas
+│       ├── medicos.js          # CRUD médicos
+│       ├── especialidades.js   # CRUD especialidades
+│       ├── horarios.js         # Slots por día
+│       ├── turnos.js           # Gestión global de turnos
+│       ├── pacientes.js        # CRUD + creación de cuentas
+│       └── configuracion.js    # Datos del centro
 └── pages/
     ├── auth/
     │   ├── login.html          # ✅ funcional
     │   ├── registro.html       # 🔒 bloqueado
     │   └── recuperar.html      # 🔒 bloqueado
-    └── paciente/
-        ├── inicio.html         # 🔒 botones inertes
-        ├── solicitar.html      # 🔒 confirm bloqueado
-        ├── mis-turnos.html     # 🔒 cancelar bloqueado
-        ├── perfil.html         # 🔒 editar y logout inertes
-        └── avisos.html         # solo lectura
+    ├── paciente/
+    │   ├── inicio.html         # 🔒 botones inertes
+    │   ├── solicitar.html      # 🔒 confirm bloqueado
+    │   ├── mis-turnos.html     # 🔒 cancelar bloqueado
+    │   ├── perfil.html         # 🔒 editar y logout inertes
+    │   └── avisos.html         # solo lectura
+    └── admin/
+        ├── dashboard.html      # Métricas
+        ├── medicos.html        # CRUD médicos
+        ├── especialidades.html # CRUD especialidades
+        ├── horarios.html       # Slots por día
+        ├── turnos.html         # Gestión global de turnos
+        ├── pacientes.html      # CRUD + creación de cuentas
+        └── configuracion.html  # Datos del centro
 ```
 
 ## 🆕 Cómo se logra el bloqueo
@@ -85,8 +104,9 @@ Cada página del paciente y de auth (excepto `login.html`) carga `js/utils/lock-
 
 El login sigue funcionando porque NO carga `lock-ui.js` y porque `lock-ui.js` excluye específicamente los formularios `#loginForm, #registerForm, #recoverForm`.
 
-## ✅ Pantallas listas (visualmente)
+## ✅ Pantallas listas
 
+**Paciente (visual):**
 - [x] Landing con CTAs (los CTAs navegan porque son flujo de auth)
 - [x] Login (única pantalla 100% funcional de paciente)
 - [x] Registro (UI lista, envío bloqueado)
@@ -96,11 +116,19 @@ El login sigue funcionando porque NO carga `lock-ui.js` y porque `lock-ui.js` ex
 - [x] Mis turnos (lista + filtros + buscar)
 - [x] Perfil (datos demo)
 - [x] Notificaciones (3 mensajes demo)
-- [x] Sidebar colapsable (única navegación activa del paciente)
+- [x] Sidebar colapsable
 - [x] Bottom nav móvil (visible, no navega)
+
+**Administrador (funcionales):**
+- [x] Dashboard con métricas: turnos hoy, médicos activos, total turnos, tasa de cancelación, turnos por especialidad, turnos por estado, próximos turnos
+- [x] Gestión de Médicos (CRUD + activar/desactivar + filtros)
+- [x] Gestión de Especialidades (CRUD + íconos y colores)
+- [x] Gestión de Horarios (slots por día de la semana, edición libre, restablecer)
+- [x] Gestión global de Turnos (listar, filtrar, crear, eliminar, cambiar estado)
+- [x] Gestión de Pacientes (crear cuenta con contraseña temporal, listar, editar, eliminar)
+- [x] Configuración del centro (datos institucionales + logo base64)
 
 ## ⏭️ Lo que sigue
 
-- Reemplazar `lock-ui.js` cuando se reactive la lógica real.
-- Panel admin (Dashboard, CRUD médicos, CRUD horarios, reportes).
-- Conectar a Firebase real.
+- Reemplazar `lock-ui.js` cuando se reactive la lógica real del paciente.
+- Conectar a Firebase real: solo hay que cambiar `useFirebase: true` en `js/config.js` y reimplementar los métodos de `js/data/repository.js` (la API pública queda igual, no hace falta tocar las páginas admin).
