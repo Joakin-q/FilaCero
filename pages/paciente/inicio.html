@@ -32,9 +32,9 @@
               <img src="../../assets/images/logo.jpeg" alt="FilaCero">
               FILACERO
             </div>
-            <span style="color: var(--color-text-inverse-muted); cursor: default;" aria-label="Perfil">
+            <a href="perfil.html" style="color: var(--color-text-inverse-muted);" aria-label="Perfil">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
-            </span>
+            </a>
           </div>
           <h1 id="welcomeTitle">Hola 👋</h1>
           <p>Acá tenés el resumen de tus turnos.</p>
@@ -44,10 +44,10 @@
         <div class="welcome-card">
           <h2>¿Necesitás un turno?</h2>
           <p>Reservá en pocos pasos, sin llamadas ni esperas.</p>
-          <button type="button" class="cta">
+          <a href="solicitar.html" class="cta">
             Pedir turno ahora
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
+          </a>
         </div>
 
         <!-- Stats -->
@@ -62,7 +62,7 @@
         <div class="section-block">
           <h3>
             Próximos turnos
-            <span style="color: var(--accent); cursor: default;">Ver todos →</span>
+            <a href="mis-turnos.html" style="color: var(--accent); font-size: 12px; font-weight: 600;">Ver todos →</a>
           </h3>
           <div id="proximosList" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </div>
@@ -79,7 +79,6 @@
 <script src="../../js/data/db.js"></script>
 <script src="../../js/auth/auth.js"></script>
 <script src="../../js/utils/utils.js"></script>
-<script src="../../js/utils/lock-ui.js"></script>
 <script>
   (async () => {
     const session = window.FC_AUTH.requireAuth(['paciente']);
@@ -134,7 +133,7 @@
           <div class="turno-avatar turno-avatar--${colorClass}">${t.iniciales}</div>
           <div class="turno-info">
             <div class="turno-specialty">${t.especialidad}</div>
-            <div class="turno-doctor">Dr. ${t.medico}</div>
+            <div class="turno-doctor">${t.medico}</div>
           </div>
           <svg class="turno-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </div>
@@ -153,7 +152,7 @@
             <span class="status-dot status-dot--confirmado"></span>Confirmado
           </div>
           <div class="turno-actions">
-            <button type="button" class="btn-outline">Reprogramar</button>
+            <a href="mis-turnos.html" class="btn-outline">Ver detalle</a>
           </div>
         </div>
       </article>

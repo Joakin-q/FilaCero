@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#1E3A2E">
   <link rel="manifest" href="../../manifest.json">
   <link rel="icon" type="image/jpeg" href="../../assets/images/logo.jpeg">
-  <title>Mis Turnos · FilaCero</title>
+  <title>Historial de Turnos · FilaCero</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -32,27 +32,24 @@
               FILACERO
             </div>
           </div>
-          <h1>Mis Turnos</h1>
-          <p>Consultá tus próximos turnos y el historial de consultas médicas.</p>
+          <h1>Historial de Turnos</h1>
+          <p>Consultá todos tus turnos anteriores.</p>
         </header>
 
-        <div class="stats-row">
+        <div class="stats-row stats-row--historial">
           <div class="stat-card"><strong id="statTotal">0</strong><span>Total</span></div>
-          <div class="stat-card"><strong id="statProximos">0</strong><span>Próximos</span></div>
-          <div class="stat-card"><strong id="statFinalizados">0</strong><span>Finalizados</span></div>
+          <div class="stat-card"><strong id="statAsistidos">0</strong><span>Asistidos</span></div>
           <div class="stat-card"><strong id="statCancelados">0</strong><span>Cancelados</span></div>
         </div>
 
         <div class="search-bar">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-          <input type="text" id="searchInput" placeholder="Buscar por especialidad, médico o fecha...">
+          <input type="text" id="searchInput" placeholder="Buscar por especialidad o médico...">
         </div>
 
         <div class="filter-tabs" id="filterTabs">
           <button class="filter-tab is-active" data-filter="todos">Todos</button>
-          <button class="filter-tab" data-filter="proximos">Próximos</button>
-          <button class="filter-tab" data-filter="confirmados">Confirmados</button>
-          <button class="filter-tab" data-filter="finalizados">Finalizados</button>
+          <button class="filter-tab" data-filter="asistidos">Asistidos</button>
           <button class="filter-tab" data-filter="cancelados">Cancelados</button>
         </div>
 
@@ -70,6 +67,6 @@
 <script src="../../js/data/db.js"></script>
 <script src="../../js/auth/auth.js"></script>
 <script src="../../js/utils/utils.js"></script>
-<script src="../../js/paciente/mis-turnos.js"></script>
+<script src="../../js/paciente/historial.js"></script>
 </body>
 </html>

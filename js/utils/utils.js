@@ -74,7 +74,7 @@
       { id: 'inicio',     label: 'Inicio',         href: 'inicio.html',       icon: 'home' },
       { id: 'pedir',       label: 'Pedir turno',    href: 'solicitar.html',    icon: 'plus' },
       { id: 'turnos',      label: 'Mis turnos',     href: 'mis-turnos.html',   icon: 'calendar' },
-      { id: 'historial',   label: 'Historial',      href: 'mis-turnos.html',   icon: 'clock' },
+      { id: 'historial',   label: 'Historial',      href: 'historial.html',    icon: 'clock' },
       { id: 'avisos',      label: 'Notificaciones', href: 'avisos.html',       icon: 'bell' },
       { id: 'perfil',      label: 'Perfil',         href: 'perfil.html',       icon: 'user' },
       { id: 'config',      label: 'Configuración',  href: 'config.html',       icon: 'gear' }
@@ -135,24 +135,23 @@
     `;
   }
 
-  /** Inyecta bottom-nav móvil (DESHABILITADO: solo visual, no navega) */
+  /** Inyecta bottom-nav móvil y permite navegar */
   function mountBottomNav(active = 'turnos') {
     const nav = document.getElementById('fc-bottom-nav');
     if (!nav) return;
     const items = [
-      { id: 'inicio',    label: 'Inicio' },
-      { id: 'pedir',     label: 'Turnos' },
-      { id: 'historial', label: 'Historial' },
-      { id: 'avisos',    label: 'Avisos' },
-      { id: 'perfil',    label: 'Perfil' }
+      { id: 'inicio',    label: 'Inicio',    href: 'inicio.html' },
+      { id: 'pedir',     label: 'Turnos',    href: 'solicitar.html' },
+      { id: 'historial', label: 'Historial', href: 'historial.html' },
+      { id: 'avisos',    label: 'Avisos',    href: 'avisos.html' },
+      { id: 'perfil',    label: 'Perfil',    href: 'perfil.html' }
     ];
     nav.innerHTML = items.map(i => `
-      <button type="button" class="nav-item ${i.id === active ? 'is-active' : ''}" disabled aria-disabled="true">
+      <a href="${i.href}" class="nav-item ${i.id === active ? 'is-active' : ''}" data-nav="${i.id}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
         ${i.label}
-      </button>
+      </a>
     `).join('');
-    // Reemplazar los SVGs vacíos por los iconos correctos
     nav.querySelectorAll('.nav-item').forEach((el, idx) => {
       const i = items[idx];
       const svg = el.querySelector('svg');
@@ -164,19 +163,6 @@
         perfil:    '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>'
       }[i.id] || '';
     });
-    // Bloquear cualquier intento de click
-    nav.querySelectorAll('button.nav-item').forEach((el) => {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        _flashDisabled(el);
-      });
-    });
-  }
-
-  function _flashDisabled(el) {
-    el.classList.add('nav-item--blocked');
-    setTimeout(() => el.classList.remove('nav-item--blocked'), 400);
   }
 
   /** Inyecta topbar desktop */

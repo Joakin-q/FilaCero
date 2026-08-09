@@ -77,7 +77,6 @@
 <script src="../../js/data/db.js"></script>
 <script src="../../js/auth/auth.js"></script>
 <script src="../../js/utils/utils.js"></script>
-<script src="../../js/utils/lock-ui.js"></script>
 <script>
   (async () => {
     const session = window.FC_AUTH.requireAuth(['paciente']);
@@ -87,26 +86,38 @@
     window.FC_UTIL.mountBottomNav('perfil');
     window.FC_UTIL.mountTopbar({ title: 'Mi perfil', user: session });
 
-    const paciente = await window.FC_DB.findPacienteByUsuario(session.userId);
+    let paciente = await window.FC_DB.findPacienteByUsuario(session.userId);
     if (!paciente) {
       document.getElementById('profileName').textContent = 'Sin datos';
       return;
     }
 
-    const ini = `${paciente.nombre[0] || ''}${paciente.apellido[0] || ''}`.toUpperCase();
-    document.getElementById('profileAvatar').textContent = ini;
-    document.getElementById('profileName').textContent = `${paciente.nombre} ${paciente.apellido}`;
-    document.getElementById('profileEmail').textContent = session.email;
-    document.getElementById('pDni').textContent = paciente.dni || '—';
-    document.getElementById('pFecha').textContent = paciente.fechaNacimiento
-      ? new Date(paciente.fechaNacimiento + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' })
-      : '—';
-    document.getElementById('pObra').textContent = paciente.obraSocial || '—';
-    document.getElementById('pTel').textContent = paciente.telefono || '—';
-    document.getElementById('pEmail').textContent = session.email;
+    function render() {
+      const ini = `${paciente.nombre[0] || ''}${paciente.apellido[0] || ''}`.toUpperCase();
+      document.getElementById('profileAvatar').textContent = ini;
+      document.getElementById('profileName').textContent = `${paciente.nombre} ${paciente.apellido}`;
+      document.getElementById('profileEmail').textContent = session.email;
+      document.getElementById('pDni').textContent = paciente.dni || '—';
+      document.getElementById('pFecha').textContent = paciente.fechaNacimiento
+        ? new Date(paciente.fechaNacimiento + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' })
+        : '—';
+      document.getElementById('pObra').textContent = paciente.obraSocial || '—';
+      document.getElementById('pTel').textContent = paciente.telefono || '—';
+      document.getElementById('pEmail').textContent = session.email;
+    }
 
-    // Los botones (Editar, Cerrar sesión de la página)
-    // quedan bloqueados por lock-ui.js. El logout del sidebar sigue funcionando.
+    render();
+
+    document.getElementById('btnLogout').addEventListener('click', () => window.FC_AUTH.logout());
+
+    document.getElementById('btnEdit').addEventListener('click', () => {
+      window.FC_UTIL.showModal({
+        icon: 'success',
+        title: 'Editar datos',
+        message: 'Esta función se habilitará cuando tu compañero conecte la base de datos.',
+        confirmText: 'Entendido'
+      });
+    });
   })();
 </script>
 </body>

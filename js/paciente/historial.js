@@ -1,57 +1,53 @@
 /**
- * mis-turnos.js — Pantalla Mis Turnos
+ * historial.js — Pantalla Historial de Turnos
  *
- * Muestra los turnos activos del paciente: Próximos, Confirmados, etc.
- * Permite buscar, filtrar y cancelar turnos pendientes/confirmados/próximos.
+ * Renderiza turnos históricos del paciente: Asistidos, Cancelados.
+ * Permite filtrar por estado y buscar por especialidad/médico.
  */
+
 (function () {
   const session = window.FC_AUTH ? window.FC_AUTH.requireAuth(['paciente']) : null;
   if (!session) return;
 
-  window.FC_UTIL.mountSidebar({ active: 'turnos', user: session });
-  window.FC_UTIL.mountTopbar({ title: 'Mis turnos', user: session });
-  window.FC_UTIL.mountBottomNav('turnos');
+  window.FC_UTIL.mountSidebar({ active: 'historial', user: session });
+  window.FC_UTIL.mountTopbar({ title: 'Historial', user: session });
+  window.FC_UTIL.mountBottomNav('historial');
 
   let turnos = [];
   let activeFilter = 'todos';
 
   const statusMap = {
-    confirmado: { cls: 'confirmado', label: 'Confirmado', dot: 'confirmado' },
-    pendiente:  { cls: 'proximo',    label: 'Pendiente',  dot: 'proximo' },
-    proximo:    { cls: 'proximo',    label: 'Próximo',    dot: 'proximo' },
-    asistido:   { cls: 'asistido',   label: 'Asistió',    dot: 'asistido' },
-    completado: { cls: 'asistido',   label: 'Completado', dot: 'asistido' },
-    cancelado:  { cls: 'cancelado',  label: 'Cancelado',  dot: 'cancelado' }
+    confirmado:  { cls: 'confirmado', label: 'Confirmado', dot: 'confirmado' },
+    pendiente:   { cls: 'proximo',    label: 'Pendiente',  dot: 'proximo' },
+    proximo:     { cls: 'proximo',    label: 'Próximo',    dot: 'proximo' },
+    asistido:    { cls: 'asistido',   label: 'Asistido',   dot: 'asistido' },
+    completado:  { cls: 'asistido',   label: 'Asistido',   dot: 'asistido' },
+    cancelado:   { cls: 'cancelado',  label: 'Cancelado',  dot: 'cancelado' }
   };
 
+  function isHistorial(estado) {
+    return ['asistido', 'completado', 'cancelado'].includes(estado);
+  }
+
   async function load() {
-    turnos = await window.FC_DB.listTurnos(session.pacienteId);
+    const all = await window.FC_DB.listTurnos(session.pacienteId);
+    turnos = all.filter(t => isHistorial(t.estado));
     renderStats();
     renderList();
   }
 
-  function stats() {
-    return {
-      total: turnos.length,
-      proximos: turnos.filter(t => ['pendiente','confirmado','proximo'].includes(t.estado)).length,
-      finalizados: turnos.filter(t => ['asistido','completado'].includes(t.estado)).length,
-      cancelados: turnos.filter(t => t.estado === 'cancelado').length
-    };
-  }
-
   function renderStats() {
-    const s = stats();
-    document.getElementById('statTotal').textContent = s.total;
-    document.getElementById('statProximos').textContent = s.proximos;
-    document.getElementById('statFinalizados').textContent = s.finalizados;
-    document.getElementById('statCancelados').textContent = s.cancelados;
+    const total = turnos.length;
+    const asistidos = turnos.filter(t => t.estado === 'asistido' || t.estado === 'completado').length;
+    const cancelados = turnos.filter(t => t.estado === 'cancelado').length;
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statAsistidos').textContent = asistidos;
+    document.getElementById('statCancelados').textContent = cancelados;
   }
 
   function statusMatchesFilter(status, filter) {
     if (filter === 'todos') return true;
-    if (filter === 'proximos') return ['pendiente','confirmado','proximo'].includes(status);
-    if (filter === 'confirmados') return status === 'confirmado';
-    if (filter === 'finalizados') return ['asistido','completado'].includes(status);
+    if (filter === 'asistidos') return status === 'asistido' || status === 'completado';
     if (filter === 'cancelados') return status === 'cancelado';
     return true;
   }
@@ -72,8 +68,8 @@
           <div class="icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
           </div>
-          <h3>No hay turnos</h3>
-          <p>Cuando reserves turnos, aparecerán acá.</p>
+          <h3>No hay turnos en el historial</h3>
+          <p>Tus turnos pasados aparecerán acá.</p>
         </div>
       `;
       return;
@@ -81,7 +77,6 @@
 
     list.innerHTML = filtered.map(t => {
       const s = statusMap[t.estado];
-      const canCancel = ['pendiente','confirmado','proximo'].includes(t.estado);
       const colorClass = window.FC_UTIL.avatarClassByEspecialidad(t.especialidadId);
       const fechaFmt = window.FC_UTIL.formatFechaCorta(t.fecha);
       return `
@@ -101,41 +96,10 @@
             <div class="turno-status turno-status--${s.cls}">
               <span class="status-dot status-dot--${s.dot}"></span>${s.label}
             </div>
-            ${canCancel ? `
-              <div class="turno-actions">
-                <button type="button" class="btn-outline btn-outline--danger" data-cancel="${t.id}">Cancelar</button>
-              </div>
-            ` : ''}
           </div>
         </article>
       `;
     }).join('');
-
-    list.querySelectorAll('[data-cancel]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.cancel;
-        window.FC_UTIL.showModal({
-          icon: 'danger',
-          title: 'Cancelar turno',
-          message: '¿Seguro que querés cancelar este turno?',
-          confirmText: 'Sí, cancelar',
-          cancelText: 'No',
-          onConfirm: async () => {
-            try {
-              await window.FC_DB.cancelarTurno(id);
-              await load();
-            } catch (err) {
-              window.FC_UTIL.showModal({
-                icon: 'danger',
-                title: 'Error',
-                message: err.message || 'No se pudo cancelar el turno.',
-                confirmText: 'Entendido'
-              });
-            }
-          }
-        });
-      });
-    });
   }
 
   document.querySelectorAll('#filterTabs .filter-tab').forEach(tab => {

@@ -1,48 +1,30 @@
 /**
- * lock-ui.js — Bloquea todos los botones de la página EXCEPTO los del
- * sidebar izquierdo (#fc-sidebar) y los del formulario de login.
+ * lock-ui.js — Bloqueo condicional de UI
  *
- * Se ejecuta en DOMContentLoaded. Para cada botón fuera del sidebar,
- * previene el click y muestra un toast pequeño con el mensaje
- * "Función deshabilitada".
- *
- * También bloquea los <a> de la bottom nav móvil (#fc-bottom-nav)
- * por si quedara alguno activo.
+ * Solo bloquea botones/forms si window.FC_CONFIG.lockUI === true.
+ * Cuando lockUI es false (modo funcional), no hace nada.
  */
 (function () {
   document.addEventListener('DOMContentLoaded', () => {
-    // El sidebar queda intacto: nada que bloquear dentro de él.
-    // La función de logout (data-action="logout") sigue activa.
+    const cfg = window.FC_CONFIG || {};
+    if (cfg.lockUI !== true) return;
 
-    // Toast reutilizable
     ensureToast();
 
     const isInsideSidebar = (el) => !!el.closest('#fc-sidebar');
-    const isInsideBottomNav = (el) => !!el.closest('#fc-bottom-nav');
     const isInsideLoginForm = (el) => !!el.closest('#loginForm, #registerForm, #recoverForm');
 
-    // Bloquear cualquier botón FUERA del sidebar y fuera de los forms de auth
     document.querySelectorAll('button').forEach((btn) => {
-      if (isInsideSidebar(btn)) return;             // sidebar: libre (toggle)
-      if (isInsideLoginForm(btn)) return;           // forms auth: libres
+      if (isInsideSidebar(btn)) return;
+      if (isInsideLoginForm(btn)) return;
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
         showToast('Acción deshabilitada en esta versión');
-      }, true); // capture, para ganarles a otros listeners
-    });
-
-    // Bloquear <a> de la bottom nav (por si quedó alguno)
-    document.querySelectorAll('#fc-bottom-nav a').forEach((a) => {
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        showToast('Usá el menú lateral para navegar');
       }, true);
     });
 
-    // Bloquear inputs de formularios que NO sean el de login
     document.querySelectorAll('form').forEach((form) => {
       if (isInsideLoginForm(form)) return;
       form.addEventListener('submit', (e) => {
@@ -52,7 +34,6 @@
       }, true);
     });
 
-    // ===== Toast =====
     function ensureToast() {
       if (document.getElementById('fc-toast')) return;
       const t = document.createElement('div');

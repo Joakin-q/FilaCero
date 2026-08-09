@@ -12,6 +12,21 @@
   border-radius: 0 0 var(--radius-xl) var(--radius-xl);
   box-shadow: var(--shadow-header);
 }
+
+/* ===== Historial: stats de 3 columnas ===== */
+.stats-row--historial {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px;
+  margin-top: -34px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== Historial: filtros sin scroll excesivo ===== */
+#filterTabs.historial-tabs {
+  justify-content: flex-start;
+}
 .turnos-header__deco {
   position: absolute;
   top: -60px; right: -50px;
