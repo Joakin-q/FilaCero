@@ -15,105 +15,93 @@
   <link rel="stylesheet" href="../../css/admin.css">
 </head>
 <body>
+  <div class="app-shell">
+    <aside class="desktop-sidebar" id="fc-sidebar"></aside>
 
-<div class="app-shell">
+    <div class="desktop-main">
+      <header class="desktop-topbar" id="fc-topbar"></header>
 
-  <aside class="desktop-sidebar" id="fc-sidebar"></aside>
-
-  <div class="desktop-main">
-    <header class="desktop-topbar" id="fc-topbar"></header>
-
-    <main class="desktop-content">
-      <div class="desktop-content-inner">
-
-        <div class="admin-page">
-          <div class="admin-page-header">
-            <div>
-              <h1>Dashboard</h1>
-              <p>Resumen general del centro médico.</p>
-            </div>
-            <a href="turnos.html" class="btn btn-primary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-              Nuevo turno
-            </a>
-          </div>
-
-          <!-- Métricas principales -->
-          <div class="metrics-grid">
-            <div class="metric-card metric-card--accent">
-              <div class="metric-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <main class="desktop-content">
+        <div class="desktop-content-inner">
+          <div class="admin-page">
+            <div class="admin-page-header">
+              <div>
+                <h1>Dashboard</h1>
+                <p>Resumen general del centro médico.</p>
               </div>
-              <div class="metric-label">Turnos de hoy</div>
-              <div class="metric-value" id="mHoy">0</div>
-              <div class="metric-foot" id="mHoyFoot">— programados</div>
+              <a href="turnos.html" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                Nuevo turno
+              </a>
             </div>
 
-            <div class="metric-card">
-              <div class="metric-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <div class="metrics-grid">
+              <div class="metric-card metric-card--accent">
+                <div class="metric-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+                <div class="metric-label">Turnos de hoy</div>
+                <div class="metric-value" id="mHoy">0</div>
+                <div class="metric-foot" id="mHoyFoot">— programados</div>
               </div>
-              <div class="metric-label">Médicos activos</div>
-              <div class="metric-value" id="mMedicos">0</div>
-              <div class="metric-foot" id="mMedicosFoot">de 0 en el centro</div>
-            </div>
 
-            <div class="metric-card metric-card--warning">
-              <div class="metric-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              <div class="metric-card">
+                <div class="metric-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+                <div class="metric-label">Médicos activos</div>
+                <div class="metric-value" id="mMedicos">0</div>
+                <div class="metric-foot" id="mMedicosFoot">de 0 en el centro</div>
               </div>
-              <div class="metric-label">Turnos totales</div>
-              <div class="metric-value" id="mTotal">0</div>
-              <div class="metric-foot" id="mTotalFoot">0 próximos · 0 pasados</div>
-            </div>
 
-            <div class="metric-card metric-card--danger">
-              <div class="metric-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              <div class="metric-card metric-card--warning">
+                <div class="metric-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div>
+                <div class="metric-label">Turnos totales</div>
+                <div class="metric-value" id="mTotal">0</div>
+                <div class="metric-foot" id="mTotalFoot">0 próximos · 0 pasados</div>
               </div>
-              <div class="metric-label">Tasa de cancelación</div>
-              <div class="metric-value" id="mCancel">0%</div>
-              <div class="metric-foot" id="mCancelFoot">0 turnos cancelados</div>
-            </div>
-          </div>
 
-          <!-- Fila principal: próximos turnos + turnos por especialidad -->
-          <div class="dashboard-row">
-            <div class="panel">
-              <h2>Próximos turnos</h2>
-              <p class="panel-sub">Los 5 turnos más cercanos.</p>
-              <div class="mini-list" id="proximosList"></div>
+              <div class="metric-card metric-card--danger">
+                <div class="metric-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+                <div class="metric-label">Tasa de cancelación</div>
+                <div class="metric-value" id="mCancel">0%</div>
+                <div class="metric-foot" id="mCancelFoot">0 turnos cancelados</div>
+              </div>
+            </div>
+
+            <div class="dashboard-row">
+              <div class="panel">
+                <h2>Próximos turnos</h2>
+                <p class="panel-sub">Los 5 turnos más cercanos.</p>
+                <div class="mini-list" id="proximosList"></div>
+              </div>
+              <div class="panel">
+                <h2>Turnos por especialidad</h2>
+                <p class="panel-sub">Distribución histórica completa.</p>
+                <div class="bar-chart" id="espChart"></div>
+              </div>
             </div>
 
             <div class="panel">
-              <h2>Turnos por especialidad</h2>
-              <p class="panel-sub">Distribución histórica completa.</p>
-              <div class="bar-chart" id="espChart"></div>
+              <h2>Estado de los turnos</h2>
+              <p class="panel-sub">Cómo se reparten los turnos según su estado actual.</p>
+              <div class="bar-chart" id="estadosChart"></div>
             </div>
-          </div>
-
-          <!-- Resumen por estado -->
-          <div class="panel">
-            <h2>Estado de los turnos</h2>
-            <p class="panel-sub">Cómo se reparten los turnos según su estado actual.</p>
-            <div class="bar-chart" id="estadosChart"></div>
           </div>
         </div>
+      </main>
+    </div>
 
-      </div>
-    </main>
+    <nav class="bottom-nav" id="fc-bottom-nav"></nav>
   </div>
 
-  <nav class="bottom-nav" id="fc-bottom-nav"></nav>
-</div>
+  <div class="modal-backdrop" id="fc-modal"></div>
 
-<div class="modal-backdrop" id="fc-modal"></div>
-
-<script src="../../js/config.js"></script>
-<script src="../../js/data/db.js"></script>
-<script src="../../js/data/repository.js"></script>
-<script src="../../js/auth/auth.js"></script>
-<script src="../../js/utils/utils.js"></script>
-<script src="../../js/admin/dashboard.js"></script>
+  <script src="../../js/config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="../../js/data/firebase.js"></script>
+  <script src="../../js/data/db.js"></script>
+  <script src="../../js/data/repository.js"></script>
+  <script src="../../js/auth/auth.js"></script>
+  <script src="../../js/utils/utils.js"></script>
+  <script src="../../js/admin/dashboard.js"></script>
 </body>
 </html>
