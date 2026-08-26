@@ -48,7 +48,9 @@
       let credential;
 
       try {
-        credential = await auth.signInWithEmailAndPassword(email, password);
+  await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+  credential = await auth.signInWithEmailAndPassword(email, password);
       } catch (error) {
         if (
           error.code === 'auth/user-not-found' ||

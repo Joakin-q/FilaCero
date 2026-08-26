@@ -16,7 +16,7 @@ window.FC_CONFIG = {
     appId: "1:605661966094:web:00c848ed951e24bf8e715f",
     measurementId: "G-QQESPPR2BH"
   },
-  useFirebase: false,        // Cambiá a true cuando tengas credenciales reales
+  useFirebase: true,        // Cambiá a true cuando tengas credenciales reales
   fallbackToLocal: true,     // Si Firebase falla, usa localStorage como respaldo
   centroDefault: {
     nombre: 'FilaCero Centro Médico',
