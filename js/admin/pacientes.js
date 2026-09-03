@@ -24,7 +24,9 @@
   }
 
   function contarTurnos(pacienteId) {
-    return turnos.filter(t => t.pacienteId === pacienteId).length;
+    const total = turnos.filter(t => t.pacienteId === pacienteId).length;
+    const pendientes = turnos.filter(t => t.pacienteId === pacienteId && t.estado === 'solicitud').length;
+    return pendientes > 0 ? `${total} <span class="badge-pending">(${pendientes} sol.)</span>` : total;
   }
 
   function render() {
@@ -76,9 +78,18 @@
     const html = `
       <div class="admin-modal">
         <h3>${edit ? 'Editar paciente' : 'Nueva cuenta de paciente'}</h3>
-        <p class="subtitle">${edit ? 'Modificá los datos del paciente.' : 'Creá una cuenta nueva. Se generará una contraseña temporal para entregarle.'}</p>
+        <p class="subtitle">${edit ? 'Modificá la cuenta y los datos personales.' : 'Creá una cuenta nueva. Se generará una contraseña temporal para entregarle.'}</p>
         <form id="pacForm">
           <div class="form-grid">
+            <div class="field field--full"><label>Email</label>
+              <input type="email" name="email" required value="${edit?.email || ''}">
+            </div>
+            <div class="field"><label>Rol</label>
+              <select name="rol">
+                <option value="paciente" ${edit?.rol === 'paciente' ? 'selected' : ''}>Paciente</option>
+                <option value="admin" ${edit?.rol === 'admin' ? 'selected' : ''}>Administrador</option>
+              </select>
+            </div>
             <div class="field"><label>Nombre</label>
               <input name="nombre" required value="${edit?.nombre || ''}">
             </div>
@@ -90,9 +101,6 @@
             </div>
             <div class="field"><label>Fecha de nacimiento</label>
               <input type="date" name="fechaNacimiento" value="${edit?.fechaNacimiento || ''}">
-            </div>
-            <div class="field field--full"><label>Email</label>
-              <input type="email" name="email" required value="${edit?.email || ''}">
             </div>
             <div class="field"><label>Teléfono</label>
               <input name="telefono" value="${edit?.telefono || ''}">
@@ -117,10 +125,17 @@
       const fd = Object.fromEntries(new FormData(e.target));
       try {
         if (edit) {
-          await window.FC_REPO.updatePaciente(edit.id, fd);
-          window.FC_UTIL.adminToast('Paciente actualizado', 'success');
+          const { email, rol, ...patientData } = fd;
+
+          // Actualizar datos de cuenta (usuarios)
+          await window.FC_REPO.updatePaciente(edit.id, { email, rol });
+          // Actualizar datos personales (pacientes)
+          await window.FC_REPO.updatePatientDetails(edit.id, patientData);
+          window.FC_UTIL.adminToast('Paciente actualizado completamente', 'success');
         } else {
-          const res = await window.FC_REPO.createPaciente(fd);
+          const { email, rol, ...patientData } = fd;
+          // El método createPaciente ya crea ambos, pero ajustamos los datos
+          const res = await window.FC_REPO.createPaciente({ ...patientData, email, rol });
           closeModal();
           mostrarPasswordTemporal(res);
           await cargar();

@@ -108,12 +108,66 @@
         : '../paciente/inicio.html';
     },
 
-    async registerPaciente() {
-      throw new Error('Registro deshabilitado en esta versión');
+    async registerPaciente(userData) {
+      const { email, password, nombre, apellido, dni, fechaNacimiento, telefono, obraSocial } = userData;
+
+      try {
+        // 1. Create user in Firebase Auth
+        const credential = await auth.createUserWithEmailAndPassword(email, password);
+        const uid = credential.user.uid;
+
+        // 2. Create user profile in Firestore
+        await db.collection('usuarios').doc(uid).set({
+          email: email.toLowerCase(),
+          rol: 'paciente',
+          pacienteID: uid,
+          createdAt: Date.now()
+        });
+
+        // 3. Create patient details in Firestore
+        await db.collection('pacientes').doc(uid).set({
+          id: uid,
+          usuarioId: uid,
+          nombre,
+          apellido,
+          dni,
+          fechaNacimiento,
+          telefono,
+          obraSocial,
+          activo: true
+        });
+
+        // 4. Create session
+        const session = {
+          userId: uid,
+          email: email.toLowerCase(),
+          rol: 'paciente',
+          pacienteId: uid,
+          loginAt: Date.now()
+        };
+        setSession(session);
+        return session;
+      } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+          throw new Error('EMAIL_EN_USO');
+        }
+        if (error.code === 'auth/weak-password') {
+          throw new Error('PASSWORD_DEBIL');
+        }
+        throw error;
+      }
     },
 
-    async recoverPassword() {
-      throw new Error('Recuperación deshabilitada en esta versión');
+    async recoverPassword(email) {
+      try {
+        await auth.sendPasswordResetEmail(email);
+        return true;
+      } catch (error) {
+        if (error.code === 'auth/user-not-found') {
+          throw new Error('USUARIO_NO_ENCONTRADO');
+        }
+        throw error;
+      }
     },
 
     validateEmail(email) {

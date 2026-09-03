@@ -15,13 +15,7 @@
   }
   window.FC_UTIL.mountBottomNav('historial');
 
-  const TURNOS = [
-    { id: 't-1', esp: 'Cardiología',     iniciales: 'MC', medico: 'Dra. María Castillo',  fecha: '2025-08-04', hora: '09:30', estado: 'confirmado' },
-    { id: 't-2', esp: 'Clínica Médica',  iniciales: 'RL', medico: 'Dr. Roberto López',    fecha: '2025-08-06', hora: '11:00', estado: 'proximo' },
-    { id: 't-3', esp: 'Pediatría',       iniciales: 'AG', medico: 'Dra. Ana González',    fecha: '2025-07-10', hora: '14:15', estado: 'asistido' },
-    { id: 't-4', esp: 'Dermatología',    iniciales: 'FP', medico: 'Dr. Fernando Ponce',   fecha: '2025-07-15', hora: '10:00', estado: 'cancelado' },
-    { id: 't-5', esp: 'Oftalmología',    iniciales: 'LM', medico: 'Dra. Laura Medina',    fecha: '2025-08-18', hora: '16:30', estado: 'proximo' }
-  ];
+  let currentTurnos = [];
 
   const colorMap = {
     'Cardiología': 'blue', 'Clínica Médica': 'green', 'Pediatría': 'cream',
@@ -40,10 +34,10 @@
 
   function stats() {
     return {
-      total: TURNOS.length,
-      proximos: TURNOS.filter(t => ['pendiente','confirmado','proximo'].includes(t.estado)).length,
-      finalizados: TURNOS.filter(t => ['asistido','completado'].includes(t.estado)).length,
-      cancelados: TURNOS.filter(t => t.estado === 'cancelado').length
+      total: currentTurnos.length,
+      proximos: currentTurnos.filter(t => ['pendiente','confirmado','proximo'].includes(t.estado)).length,
+      finalizados: currentTurnos.filter(t => ['asistido','completado'].includes(t.estado)).length,
+      cancelados: currentTurnos.filter(t => t.estado === 'cancelado').length
     };
   }
 
@@ -67,12 +61,13 @@
   function renderList() {
     const list = document.getElementById('turnosList');
     const query = document.getElementById('searchInput').value.trim().toLowerCase();
-    const filtered = TURNOS.filter(t => {
+    const filtered = currentTurnos.filter(t => {
       const matchesFilter = statusMatchesFilter(t.estado, activeFilter);
-      const text = `${t.esp} ${t.medico} ${t.fecha} ${t.hora}`.toLowerCase();
+      const text = `${t.especialidad || t.esp} ${t.medico} ${t.fecha} ${t.hora}`.toLowerCase();
       const matchesSearch = !query || text.includes(query);
       return matchesFilter && matchesSearch;
     });
+
 
     if (filtered.length === 0) {
       list.innerHTML = `
@@ -118,17 +113,53 @@
       `;
     }).join('');
 
-    // Botón cancelar: muestra modal deshabilitado
+    // Botón cancelar: funcionalidad real
     list.querySelectorAll('[data-cancel]').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.cancel;
+        const session = window.FC_AUTH.getSession();
+        if (!session) return;
+
         window.FC_UTIL.showModal({
           icon: 'danger',
-          title: 'Acción deshabilitada',
-          message: 'La cancelación de turnos no está activa en esta versión.',
-          confirmText: 'Entendido'
+          title: 'Cancelar turno',
+          message: '¿Estás seguro de que querés cancelar este turno?',
+          confirmText: 'Sí, cancelar',
+          cancelText: 'Volver',
+          onConfirm: async () => {
+            try {
+              await window.FC_REPO.updateTurno(id, { estado: 'cancelado' });
+              await loadAndRender();
+              window.FC_UTIL.showModal({
+                icon: 'success',
+                title: 'Turno cancelado',
+                message: 'El turno ha sido cancelado correctamente.',
+                confirmText: 'Aceptar'
+              });
+            } catch (error) {
+              window.FC_UTIL.showModal({
+                icon: 'danger',
+                title: 'Error',
+                message: error.message || 'No se pudo cancelar el turno.',
+                confirmText: 'Cerrar'
+              });
+            }
+          }
         });
       });
     });
+  }
+
+  async function loadAndRender() {
+    const session = window.FC_AUTH.getSession();
+    if (!session) return;
+    try {
+      currentTurnos = await window.FC_REPO.listTurnos({ pacienteId: session.pacienteId });
+      renderStats();
+      renderList();
+    } catch (error) {
+      console.error('Error loading turnos:', error);
+    }
   }
 
   document.querySelectorAll('#filterTabs .filter-tab').forEach(tab => {
@@ -141,6 +172,5 @@
   });
   document.getElementById('searchInput').addEventListener('input', renderList);
 
-  renderStats();
-  renderList();
+  loadAndRender();
 })();

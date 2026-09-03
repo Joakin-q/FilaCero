@@ -87,13 +87,21 @@
       const id = btn.dataset.id;
       const action = btn.dataset.action;
       btn.addEventListener('click', () => {
+        const t = turnos.find(x => x.id === id);
         if (action === 'delete') confirmarEliminar(id);
-        if (action === 'estado') cambiarEstado(id);
+        if (action === 'estado') {
+          if (t && t.estado === 'solicitud') {
+            gestionarSolicitud(id, t);
+          } else {
+            cambiarEstado(id);
+          }
+        }
       });
     });
   }
 
   const ESTADOS_LABEL = {
+    solicitud:  'Solicitado',
     pendiente:  'Pendiente',
     confirmado: 'Confirmado',
     proximo:    'Próximo',
@@ -224,6 +232,42 @@
         cargar();
       } catch (err) {
         window.FC_UTIL.adminToast(err.message || 'Error al actualizar', 'error');
+      }
+    });
+  }
+
+  async function gestionarSolicitud(id, t) {
+    const html = `
+      <div class="admin-modal">
+        <h3>Solicitud de Turno</h3>
+        <p class="subtitle">El paciente <strong>${t.paciente}</strong> ha solicitado un turno para el ${window.FC_UTIL.formatFechaCorta(t.fecha)} a las ${t.hora}.</p>
+        <div class="form-actions" style="justify-content: center; gap: 20px; margin-top: 24px;">
+          <button class="btn btn-outline btn-outline--danger" id="btnDenegar">Denegar solicitud</button>
+          <button class="btn btn-primary" id="btnConfirmar">Confirmar turno</button>
+        </div>
+      </div>
+    `;
+    const backdrop = document.getElementById('fc-modal');
+    backdrop.innerHTML = html;
+    backdrop.classList.add('is-visible');
+    backdrop.querySelector('#btnDenegar').addEventListener('click', async () => {
+      try {
+        await window.FC_REPO.updateTurno(id, { estado: 'cancelado' });
+        window.FC_UTIL.adminToast('Solicitud denegada', 'success');
+        closeModal();
+        cargar();
+      } catch (err) {
+        window.FC_UTIL.adminToast(err.message || 'Error al denegar', 'error');
+      }
+    });
+    backdrop.querySelector('#btnConfirmar').addEventListener('click', async () => {
+      try {
+        await window.FC_REPO.updateTurno(id, { estado: 'confirmado' });
+        window.FC_UTIL.adminToast('Turno confirmado', 'success');
+        closeModal();
+        cargar();
+      } catch (err) {
+        window.FC_UTIL.adminToast(err.message || 'Error al confirmar', 'error');
       }
     });
   }

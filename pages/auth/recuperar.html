@@ -55,23 +55,60 @@
 <div class="modal-backdrop" id="fc-modal"></div>
 
 <script src="../../js/config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../../js/data/firebase.js"></script>
 <script src="../../js/data/db.js"></script>
 <script src="../../js/auth/auth.js"></script>
 <script src="../../js/utils/utils.js"></script>
-<script src="../../js/utils/lock-ui.js"></script>
+``
 <script>
   // El form submit queda bloqueado por lock-ui.js.
   // Capturamos con prioridad para mostrar modal en vez de toast.
-  document.getElementById('recoverForm').addEventListener('submit', (e) => {
+  document.getElementById('recoverForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    e.stopImmediatePropagation();
-    window.FC_UTIL.showModal({
-      icon: 'success',
-      title: 'Recuperación deshabilitada',
-      message: 'El envío de email no está activo en esta versión.',
-      confirmText: 'Entendido'
-    });
-  }, true);
+
+    const form = e.target;
+    const errorBox = document.getElementById('authError');
+    const successBox = document.getElementById('authSuccess');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    const showError = (msg) => {
+      errorBox.textContent = msg;
+      errorBox.classList.add('is-visible');
+      successBox.classList.remove('is-visible');
+    };
+
+    const showSuccess = (msg) => {
+      successBox.textContent = msg;
+      successBox.classList.add('is-visible');
+      errorBox.classList.remove('is-visible');
+    };
+
+    errorBox.textContent = '';
+    errorBox.classList.remove('is-visible');
+    successBox.classList.remove('is-visible');
+
+    const email = form.email.value.trim();
+
+    submitBtn.disabled = true;
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Enviando...';
+
+    try {
+      await window.FC_AUTH.recoverPassword(email);
+      showSuccess('Se ha enviado un email con las instrucciones para restablecer tu contraseña.');
+      submitBtn.textContent = 'Email enviado';
+    } catch (error) {
+      const messages = {
+        USUARIO_NO_ENCONTRADO: 'No se encontró ninguna cuenta con ese correo electrónico.',
+      };
+      showError(messages[error.message] || `${error.code || ''} ${error.message || 'Error al enviar el email'}`);
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  });
 </script>
 </body>
 </html>

@@ -190,7 +190,7 @@
       { id: 'perfil',    label: 'Perfil' }
     ];
     nav.innerHTML = items.map(i => `
-      <button type="button" class="nav-item ${i.id === active ? 'is-active' : ''}" disabled aria-disabled="true">
+      <button type="button" class="nav-item ${i.id === active ? 'is-active' : ''}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
         ${i.label}
       </button>
@@ -207,12 +207,20 @@
         perfil:    '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>'
       }[i.id] || '';
     });
-    // Bloquear cualquier intento de click
+    // Navegación funcional
+    const navMap = {
+      inicio: '../paciente/inicio.html',
+      pedir: '../paciente/solicitar.html',
+      historial: '../paciente/mis-turnos.html',
+      avisos: '../paciente/avisos.html',
+      perfil: '../paciente/perfil.html'
+    };
     nav.querySelectorAll('button.nav-item').forEach((el) => {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        _flashDisabled(el);
+      el.addEventListener('click', () => {
+        const id = items.find(i => i.label === el.textContent.trim())?.id;
+        if (id && navMap[id]) {
+          window.location.href = navMap[id];
+        }
       });
     });
   }
