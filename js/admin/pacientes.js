@@ -144,6 +144,7 @@
         closeModal();
         cargar();
       } catch (err) {
+        console.error('Error detallado en pacientes.js:', err);
         window.FC_UTIL.adminToast(err.message || 'Error al guardar', 'error');
       }
     });
@@ -193,6 +194,7 @@
           window.FC_UTIL.adminToast('Paciente eliminado', 'success');
           cargar();
         } catch (err) {
+          console.error('Error detallado al eliminar:', err);
           window.FC_UTIL.adminToast(err.message || 'No se pudo eliminar', 'error');
         }
       }

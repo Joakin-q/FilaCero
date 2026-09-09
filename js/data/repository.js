@@ -156,8 +156,12 @@
     },
 
     async listHorariosDisponibles(medicoId, fecha) {
-      const snap = await db.collection('Horarios').where('MedicoID', '==', medicoId).where('fecha', '==', fecha).get();
-      return snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(h => h.disponibilidad !== false);
+      const date = new Date(fecha + 'T00:00:00');
+      const diaSemana = date.getDay();
+      const doc = await db.collection('Horarios').doc(`${medicoId}_${diaSemana}`).get();
+      if (!doc.exists) return [];
+      const slots = doc.data().slots || [];
+      return slots.map(slot => ({ id: `${doc.id}_${slot}`, hora: slot }));
     },
 
     async createHorario(data) {
@@ -184,35 +188,49 @@
     },
 
     async listTurnos(filtros = {}) {
-      const [turnosSnap, docs, pacs] = await Promise.all([
-        db.collection('turnos').get(), medicos(), pacientes()
-      ]);
-      let list = turnosSnap.docs.map(doc => {
-        const t = doc.data();
-        const medicoId = t.medicoID || t.medicoId || '';
-        const pacienteId = t.pacienteID || t.pacienteId || '';
-        const m = docs.find(x => x.id === medicoId);
-        const p = pacs.find(x => x.id === pacienteId);
-        return {
-          id: doc.id,
-          ...t,
-          medicoId,
-          pacienteId,
-          especialidadId: t.especialidadID || t.especialidadId || (m && m.especialidadId) || '',
-          medico: m ? `${m.nombre} ${m.apellido}`.trim() : '—',
-          especialidad: m ? m.especialidad : (t.especialidadID || '—'),
-          especialidadColor: m ? m.especialidadColor : 'blue',
-          paciente: p ? `${p.nombre} ${p.apellido}`.trim() || p.email : '—',
-          pacienteDni: p ? p.dni : ''
-        };
-      });
-      if (filtros.medicoId) list = list.filter(t => t.medicoId === filtros.medicoId);
-      if (filtros.pacienteId) list = list.filter(t => t.pacienteId === filtros.pacienteId);
-      if (filtros.estado) list = list.filter(t => t.estado === filtros.estado);
-      if (filtros.desde) list = list.filter(t => t.fecha >= filtros.desde);
-      if (filtros.hasta) list = list.filter(t => t.fecha <= filtros.hasta);
-      if (filtros.especialidadId) list = list.filter(t => t.especialidadId === filtros.especialidadId);
-      return list.sort((a, b) => `${b.fecha || ''}${b.hora || ''}`.localeCompare(`${a.fecha || ''}${a.hora || ''}`));
+      try {
+        let query = db.collection('turnos');
+
+        if (filtros.pacienteId) {
+          query = query.where('pacienteID', '==', filtros.pacienteId);
+        }
+
+        const [turnosSnap, docs, pacs] = await Promise.all([
+          query.get(), medicos(), pacientes()
+        ]);
+
+        let list = turnosSnap.docs.map(doc => {
+          const t = doc.data();
+          const medicoId = t.medicoID || t.medicoId || '';
+          const pacienteId = t.pacienteID || t.pacienteId || '';
+          const m = docs.find(x => x.id === medicoId);
+          const p = pacs.find(x => x.id === pacienteId);
+          return {
+            id: doc.id,
+            ...t,
+            medicoId,
+            pacienteId,
+            especialidadId: t.especialidadID || t.especialidadId || (m && m.especialidadId) || '',
+            medico: m ? `${m.nombre} ${m.apellido}`.trim() : '—',
+            especialidad: m ? m.especialidad : (t.especialidadID || '—'),
+            especialidadColor: m ? m.especialidadColor : 'blue',
+            iniciales: m ? m.iniciales : 'P',
+            paciente: p ? `${p.nombre} ${p.apellido}`.trim() || p.email : '—',
+            pacienteDni: p ? p.dni : ''
+          };
+        });
+
+        if (filtros.medicoId) list = list.filter(t => t.medicoId === filtros.medicoId);
+        if (filtros.estado) list = list.filter(t => t.estado === filtros.estado);
+        if (filtros.desde) list = list.filter(t => t.fecha >= filtros.desde);
+        if (filtros.hasta) list = list.filter(t => t.fecha <= filtros.hasta);
+        if (filtros.especialidadId) list = list.filter(t => t.especialidadId === filtros.especialidadId);
+
+        return list.sort((a, b) => `${b.fecha || ''}${b.hora || ''}`.localeCompare(`${a.fecha || ''}${a.hora || ''}`));
+      } catch (e) {
+        console.error('❌ Error en listTurnos:', e);
+        throw e;
+      }
     },
 
     async createTurno(data) {
@@ -236,7 +254,7 @@
     async updatePaciente(id, patch) { await db.collection('usuarios').doc(id).set(patch, { merge: true }); return { id, ...patch }; },
     async updatePatientDetails(id, patch) { await db.collection('pacientes').doc(id).set(patch, { merge: true }); return { id, ...patch }; },
     async createPaciente(data) {
-      const uid = `pac-${Date.now()}`; // Simulación de UID ya que el Client SDK no permite crear usuarios sin loguearlos
+      const uid = `pac-${Date.now()}`;
       await db.collection('usuarios').doc(uid).set({
         email: data.email.toLowerCase(),
         rol: data.rol || 'paciente',
@@ -263,6 +281,25 @@
       await db.collection('usuarios').doc(id).delete();
       await db.collection('pacientes').doc(id).delete();
       return true;
+    },
+
+    async findPacienteByUsuario(userId) {
+      const snap = await db.collection('pacientes').where('usuarioId', '==', userId).get();
+      if (snap.empty) return null;
+      return snap.docs[0].data();
+    },
+
+    async listNotificaciones(userId) {
+      const snap = await db.collection('notificaciones').where('usuarioId', '==', userId).orderBy('fecha', 'desc').get();
+      return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    },
+
+    async createNotificacion(data) {
+      const ref = await db.collection('notificaciones').add({
+        ...data,
+        fecha: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      return { id: ref.id, ...data };
     },
 
     async getCentro() {

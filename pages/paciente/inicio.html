@@ -44,7 +44,7 @@
         <div class="welcome-card">
           <h2>¿Necesitás un turno?</h2>
           <p>Reservá en pocos pasos, sin llamadas ni esperas.</p>
-          <button type="button" class="cta">
+          <button type="button" class="cta" onclick="window.location.href='solicitar.html'">
             Pedir turno ahora
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
@@ -81,6 +81,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="../../js/data/firebase.js"></script>
 <script src="../../js/data/db.js"></script>
+<script src="../../js/data/repository.js"></script>
 <script src="../../js/auth/auth.js"></script>
 <script src="../../js/utils/utils.js"></script>
 ``
@@ -98,7 +99,7 @@
       document.getElementById('welcomeTitle').textContent = `Hola, ${paciente.nombre} 👋`;
     }
 
-    const turnos = await window.FC_DB.listTurnos(session.pacienteId);
+    const turnos = await window.FC_DB.listTurnos({ pacienteId: session.userId });
     const stats = {
       total: turnos.length,
       proximos: turnos.filter(t => ['pendiente','confirmado','proximo'].includes(t.estado)).length,

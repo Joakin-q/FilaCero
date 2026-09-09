@@ -11,8 +11,24 @@
   const state = { step: 1, especialidadId: null, medicoId: null, fecha: null, horarioId: null, hora: null };
   const mesActual = { año: new Date().getFullYear(), mes: new Date().getMonth() };
 
+  // ===== Helpers =====
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => document.querySelectorAll(s);
+
+  function updateNextButton() {
+    const btn = $('#btnNext');
+    let enabled = false;
+
+    switch (state.step) {
+      case 1: enabled = !!state.especialidadId; break;
+      case 2: enabled = !!state.medicoId; break;
+      case 3: enabled = !!state.fecha; break;
+      case 4: enabled = !!state.hora; break;
+      case 5: enabled = true; break;
+    }
+
+    btn.disabled = !enabled;
+  }
 
   if (session) {
     window.FC_UTIL.mountSidebar({ active: 'pedir', user: session });
@@ -55,6 +71,7 @@
           list.querySelectorAll('.option-card').forEach(c => c.classList.remove('is-selected'));
           el.classList.add('is-selected');
           state.especialidadId = el.dataset.esp;
+          updateNextButton();
         });
       });
     } catch (error) {
@@ -93,6 +110,7 @@
           list.querySelectorAll('.option-card').forEach(c => c.classList.remove('is-selected'));
           el.classList.add('is-selected');
           state.medicoId = el.dataset.med;
+          updateNextButton();
         });
       });
     } catch (error) {
@@ -142,6 +160,7 @@
           state.fecha = el.dataset.iso;
           cal.querySelectorAll('.day').forEach(d => d.classList.remove('is-selected'));
           el.classList.add('is-selected');
+          updateNextButton();
         });
       });
     };
@@ -169,6 +188,7 @@
           el.classList.add('is-selected');
           state.horarioId = el.dataset.hora;
           state.hora = el.dataset.hora;
+          updateNextButton();
         });
       });
     } catch (error) {
@@ -181,12 +201,18 @@
     const card = $('#confirmCard');
     const session = window.FC_AUTH.getSession();
     if (!session) return;
-    const espNombre = { 'e-1':'Cardiología','e-2':'Clínica Médica','e-3':'Pediatría','e-4':'Dermatología','e-5':'Oftalmología','e-6':'Traumatología' };
-    const nombre = state.especialidadId ? (espNombre[state.especialidadId] || '—') : '—';
+
+    // Obtener nombres reales desde el repositorio
+    const esp = (await window.FC_REPO.listEspecialidades()).find(e => e.id === state.especialidadId);
+    const med = (await window.FC_REPO.listMedicos()).find(m => m.id === state.medicoId);
+
+    const espNombre = esp ? esp.nombre : '—';
+    const medNombre = med ? `${med.nombre} ${med.apellido}` : '—';
+
     card.innerHTML = `
       <h3>Resumen de tu turno</h3>
-      <div class="confirm-row"><span class="label">Especialidad</span><span class="value">${nombre}</span></div>
-      <div class="confirm-row"><span class="label">Médico</span><span class="value">${state.medicoId ? 'Dr. seleccionado' : '—'}</span></div>
+      <div class="confirm-row"><span class="label">Especialidad</span><span class="value">${espNombre}</span></div>
+      <div class="confirm-row"><span class="label">Médico</span><span class="value">Dr. ${medNombre}</span></div>
       <div class="confirm-row"><span class="label">Fecha</span><span class="value">${state.fecha || '—'}</span></div>
       <div class="confirm-row"><span class="label">Hora</span><span class="value">${state.hora || '—'} hs</span></div>
     `;
@@ -206,6 +232,7 @@
       state.step++;
       await renderForStep();
       renderSteps();
+      updateNextButton();
     } else {
       const session = window.FC_AUTH.getSession();
       if (!session) return;
@@ -215,7 +242,7 @@
       submitBtn.textContent = 'Confirmando...';
       try {
         await window.FC_REPO.createTurno({
-          pacienteId: session.pacienteId,
+          pacienteId: session.userId,
           medicoId: state.medicoId,
           fecha: state.fecha,
           hora: state.hora,
