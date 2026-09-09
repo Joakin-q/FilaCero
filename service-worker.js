@@ -59,7 +59,7 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   const req = e.request;
-  if (req.method !== 'GET') return;
+  if (req.method !== 'GET' || !req.url.startsWith('http')) return;
 
   // Network-first para navegación
   if (req.mode === 'navigate') {

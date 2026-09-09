@@ -74,35 +74,45 @@
   `).join('');
 
   // ===== Lista de próximos turnos =====
-  const turnosFuturos = await window.FC_REPO.listTurnos({
-    desde: new Date().toISOString().slice(0, 10),
-    estado: undefined
-  });
-  const proximos = turnosFuturos
-    .filter(t => t.estado !== 'cancelado')
-    .slice(0, 5);
+  try {
+    const turnosFuturos = await window.FC_REPO.listTurnos({
+      desde: new Date().toISOString().slice(0, 10),
+      estado: undefined
+    });
+    const proximos = turnosFuturos
+      .filter(t => t.estado !== 'cancelado')
+      .slice(0, 5);
 
-  const proximosList = document.getElementById('proximosList');
-  if (proximos.length === 0) {
-    proximosList.innerHTML = `
+    const proximosList = document.getElementById('proximosList');
+    if (proximos.length === 0) {
+      proximosList.innerHTML = `
+        <div class="admin-empty">
+          <h3>No hay turnos próximos</h3>
+          <p>Cuando se agenden turnos van a aparecer acá.</p>
+        </div>
+      `;
+    } else {
+      proximosList.innerHTML = proximos.map(t => `
+        <div class="mini-list-item">
+          <div class="avatar avatar--${t.especialidadColor || 'blue'}">${(t.medico || '?').split(' ').map(s => s[0]).slice(0,2).join('').toUpperCase()}</div>
+          <div class="info">
+            <div class="title">Dr. ${t.medico}</div>
+            <div class="sub">${t.especialidad} · ${t.paciente}</div>
+          </div>
+          <div class="when">
+            <strong>${window.FC_UTIL.formatFechaCorta(t.fecha)}</strong>
+            ${t.hora}
+          </div>
+        </div>
+      `).join('');
+    }
+  } catch (e) {
+    console.error('Error cargando turnos:', e);
+    document.getElementById('proximosList').innerHTML = `
       <div class="admin-empty">
-        <h3>No hay turnos próximos</h3>
-        <p>Cuando se agenden turnos van a aparecer acá.</p>
+        <h3>Error de permisos</h3>
+        <p>No tienes permisos suficientes para ver los turnos. Verifica la configuración de Firebase.</p>
       </div>
     `;
-  } else {
-    proximosList.innerHTML = proximos.map(t => `
-      <div class="mini-list-item">
-        <div class="avatar avatar--${t.especialidadColor || 'blue'}">${(t.medico || '?').split(' ').map(s => s[0]).slice(0,2).join('').toUpperCase()}</div>
-        <div class="info">
-          <div class="title">Dr. ${t.medico}</div>
-          <div class="sub">${t.especialidad} · ${t.paciente}</div>
-        </div>
-        <div class="when">
-          <strong>${window.FC_UTIL.formatFechaCorta(t.fecha)}</strong>
-          ${t.hora}
-        </div>
-      </div>
-    `).join('');
   }
 })();

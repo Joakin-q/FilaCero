@@ -191,9 +191,26 @@
       try {
         let query = db.collection('turnos');
 
+        // --- OPTIMIZACIÓN DE PERMISOS ---
+        // Obtenemos la sesión actual para saber el rol y el ID del paciente
+        const session = window.FC_SESSION;
+        const user = firebase.auth().currentUser;
+
         if (filtros.pacienteId) {
+          // Si se pide un paciente específico, filtramos por él
           query = query.where('pacienteID', '==', filtros.pacienteId);
+        } else if (session && session.rol !== 'admin') {
+          // Si NO es admin y no hay filtro, FORZAMOS el filtro por su propio ID.
+          // Esto evita el error "Missing or insufficient permissions" ya que
+          // Firebase no permite pedir la lista completa si no eres admin.
+          const pid = session.pacienteId || (user ? user.uid : null);
+          if (pid) {
+            query = query.where('pacienteID', '==', pid);
+          }
         }
+        // Si es admin y no hay filtro, query se queda como db.collection('turnos'),
+        // lo cual está permitido por las reglas para admins.
+        // -------------------------------
 
         const [turnosSnap, docs, pacs] = await Promise.all([
           query.get(), medicos(), pacientes()
