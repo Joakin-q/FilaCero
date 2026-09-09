@@ -504,6 +504,10 @@
 /* =========================================
    PERFIL
    ========================================= */
+.profile-page {
+  padding: 16px;
+}
+
 .profile-header {
   display: flex;
   align-items: center;
@@ -653,8 +657,9 @@
 /* =========================================
    RESPONSIVE DESKTOP
    ========================================= */
-@media (min-width: 1024px) {
+@media (min-width: 1024px) 
 
+  {
   /* Ocultar header móvil de paciente */
   .turnos-header { display: none; }
 
@@ -667,6 +672,17 @@
     margin: 0 auto;
     padding: 32px 24px 32px;
   }
+  }
+  /* Barra fija Atrás/Siguiente: no debe taparse con la sidebar */
+  .wizard-nav {
+    left: var(--sidebar-width);
+    padding: 16px 32px;
+    justify-content: flex-end;
+  }
+  .wizard-nav .btn {
+    flex: none;
+    min-width: 160px;
+  }
 
   .times-grid { grid-template-columns: repeat(5, 1fr); }
 
@@ -674,7 +690,7 @@
 
   .stats-row {
     max-width: 720px;
-    margin: -34px auto 0;
+    margin: 0 auto;
     padding: 0 24px;
     gap: 14px;
   }
@@ -703,11 +719,3 @@
   }
 
   .section-block { max-width: 720px; margin: 0 auto 24px; }
-
-  .profile-card-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .profile-section { margin-bottom: 0; }
-}
