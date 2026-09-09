@@ -78,8 +78,37 @@
     }).filter(p => p.nombre || p.apellido || p.email);
   }
 
+  async function getPaciente(id) {
+    if (!id) return null;
+    try {
+      const [uDoc, pDoc] = await Promise.all([
+        db.collection('usuarios').doc(id).get(),
+        db.collection('pacientes').doc(id).get()
+      ]);
+      const u = uDoc.data();
+      const p = pDoc.data();
+      if (!u && !p) return null;
+      return {
+        id: id,
+        nombre: p?.nombre || u?.nombre || u?.Nombre || '',
+        apellido: p?.apellido || u?.apellido || u?.Apellido || '',
+        dni: p?.dni || u?.dni || u?.DNI || '—',
+        email: u?.email || '',
+        telefono: p?.telefono || u?.telefono || u?.Telefono || '',
+        obraSocial: p?.obraSocial || u?.obraSocial || u?.ObraSocial || '',
+        fechaNacimiento: p?.fechaNacimiento || u?.fechaNacimiento || u?.FechaNacimiento || '',
+        rol: u?.rol || 'paciente'
+      };
+    } catch (e) {
+      console.error('Error getPaciente:', e);
+      return null;
+    }
+  }
+
   const Repo = {
     async listEspecialidades() { return especialidades(); },
+
+    async getPaciente(id) { return getPaciente(id); },
 
     async createEspecialidad(data) {
       const ref = await db.collection('Especialidades').add({
@@ -191,30 +220,34 @@
       try {
         let query = db.collection('turnos');
 
-        // --- OPTIMIZACIÓN DE PERMISOS ---
-        // Obtenemos la sesión actual para saber el rol y el ID del paciente
         const session = window.FC_SESSION;
         const user = firebase.auth().currentUser;
 
         if (filtros.pacienteId) {
-          // Si se pide un paciente específico, filtramos por él
           query = query.where('pacienteID', '==', filtros.pacienteId);
         } else if (session && session.rol !== 'admin') {
-          // Si NO es admin y no hay filtro, FORZAMOS el filtro por su propio ID.
-          // Esto evita el error "Missing or insufficient permissions" ya que
-          // Firebase no permite pedir la lista completa si no eres admin.
           const pid = session.pacienteId || (user ? user.uid : null);
           if (pid) {
             query = query.where('pacienteID', '==', pid);
           }
         }
-        // Si es admin y no hay filtro, query se queda como db.collection('turnos'),
-        // lo cual está permitido por las reglas para admins.
-        // -------------------------------
 
-        const [turnosSnap, docs, pacs] = await Promise.all([
-          query.get(), medicos(), pacientes()
+        const [turnosSnap, docs] = await Promise.all([
+          query.get(), medicos()
         ]);
+
+        // Optimización de carga de pacientes:
+        // Si es admin, cargamos todos. Si es paciente, cargamos solo el suyo.
+        let pacs = [];
+        if (session && session.rol === 'admin') {
+          pacs = await pacientes();
+        } else {
+          const pid = filtros.pacienteId || (session ? session.pacienteId : (user ? user.uid : null));
+          if (pid) {
+            const p = await this.getPaciente(pid);
+            if (p) pacs = [p];
+          }
+        }
 
         let list = turnosSnap.docs.map(doc => {
           const t = doc.data();

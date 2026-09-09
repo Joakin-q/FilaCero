@@ -3,20 +3,15 @@
  */
 
 (function () {
-  const session = window.FC_AUTH ? window.FC_AUTH.getSession() : null;
+  const session = window.FC_AUTH.requireAuth(['paciente']);
+  if (!session) return;
 
-  if (session) {
-    window.FC_UTIL.mountSidebar({ active: 'turnos', user: session });
-    window.FC_UTIL.mountTopbar({ title: 'Mis turnos', user: session });
-  }
+  window.FC_UTIL.mountSidebar({ active: 'turnos', user: session });
+  window.FC_UTIL.mountTopbar({ title: 'Mis turnos', user: session });
   window.FC_UTIL.mountBottomNav('historial');
 
   let currentTurnos = [];
 
-  const colorMap = {
-    'Cardiología': 'blue', 'Clínica Médica': 'green', 'Pediatría': 'cream',
-    'Dermatología': 'pink', 'Oftalmología': 'teal', 'Traumatología': 'violet'
-  };
   const statusMap = {
     solicitud:  { cls: 'proximo',    label: 'Solicitado',  dot: 'proximo' },
     confirmado: { cls: 'confirmado', label: 'Confirmado', dot: 'confirmado' },
@@ -87,7 +82,7 @@
       return `
         <article class="turno-card" data-status="${t.estado}">
           <div class="turno-card__top">
-            <div class="turno-avatar turno-avatar--${colorMap[t.especialidad] || 'blue'}">${initials}</div>
+            <div class="turno-avatar turno-avatar--${t.especialidadColor || 'blue'}">${initials}</div>
             <div class="turno-info">
               <div class="turno-specialty">${t.especialidad || '—'}</div>
               <div class="turno-doctor">${t.medico || '—'}</div>
@@ -150,14 +145,25 @@
   async function loadAndRender() {
     const session = window.FC_AUTH.getSession();
     if (!session) return;
-    console.log('🔍 Cargando turnos para pacienteId:', session.pacienteId);
+
+    const list = document.getElementById('turnosList');
+    list.innerHTML = '<p class="loading">Cargando tus turnos...</p>';
+
     try {
-      currentTurnos = await window.FC_REPO.listTurnos({ pacienteId: session.userId });
-      console.log('📦 Turnos recibidos del servidor:', currentTurnos);
+      currentTurnos = await window.FC_REPO.listTurnos({ pacienteId: session.pacienteId });
       renderStats();
       renderList();
     } catch (error) {
       console.error('Error loading turnos:', error);
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <h3>Error de carga</h3>
+          <p>No pudimos cargar tus turnos. Por favor, intenta recargar la página.</p>
+        </div>
+      `;
     }
   }
 

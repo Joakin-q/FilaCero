@@ -6,7 +6,8 @@
  */
 
 (function () {
-  const session = window.FC_AUTH ? window.FC_AUTH.getSession() : null;
+  const session = window.FC_AUTH.requireAuth(['paciente']);
+  if (!session) return;
 
   const state = { step: 1, especialidadId: null, medicoId: null, fecha: null, horarioId: null, hora: null };
   const mesActual = { año: new Date().getFullYear(), mes: new Date().getMonth() };

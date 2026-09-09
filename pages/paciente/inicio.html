@@ -94,12 +94,12 @@
     window.FC_UTIL.mountBottomNav('inicio');
     window.FC_UTIL.mountTopbar({ title: 'Inicio', user: session });
 
-    const paciente = await window.FC_DB.findPacienteByUsuario(session.userId);
+    const paciente = await window.FC_REPO.getPaciente(session.userId);
     if (paciente) {
       document.getElementById('welcomeTitle').textContent = `Hola, ${paciente.nombre} 👋`;
     }
 
-    const turnos = await window.FC_DB.listTurnos({ pacienteId: session.userId });
+    const turnos = await window.FC_REPO.listTurnos({ pacienteId: session.userId });
     const stats = {
       total: turnos.length,
       proximos: turnos.filter(t => ['pendiente','confirmado','proximo'].includes(t.estado)).length,
