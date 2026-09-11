@@ -9,7 +9,7 @@
     window.FC_UTIL.mountSidebar({ active: 'turnos', user: session });
     window.FC_UTIL.mountTopbar({ title: 'Mis turnos', user: session });
   }
-  window.FC_UTIL.mountBottomNav('historial');
+  window.FC_UTIL.mountBottomNav('pedir');
 
   let currentTurnos = [];
 

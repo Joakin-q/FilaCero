@@ -115,7 +115,6 @@
           { id: 'inicio',     label: 'Inicio',         href: '../paciente/inicio.html',     icon: 'home' },
           { id: 'pedir',      label: 'Pedir turno',    href: '../paciente/solicitar.html',  icon: 'plus' },
           { id: 'turnos',     label: 'Mis turnos',     href: '../paciente/mis-turnos.html', icon: 'calendar' },
-          { id: 'historial',  label: 'Historial',      href: '../paciente/mis-turnos.html', icon: 'clock' },
           { id: 'avisos',     label: 'Notificaciones', href: '../paciente/avisos.html',     icon: 'bell' }
         ]
       },
@@ -185,7 +184,6 @@
     const items = [
       { id: 'inicio',    label: 'Inicio' },
       { id: 'pedir',     label: 'Turnos' },
-      { id: 'historial', label: 'Historial' },
       { id: 'avisos',    label: 'Avisos' },
       { id: 'perfil',    label: 'Perfil' }
     ];
@@ -202,7 +200,6 @@
       svg.innerHTML = {
         inicio:    '<path d="m3 11 9-8 9 8M5 10v10h14V10"/>',
         pedir:     '<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16h4" stroke-width="1.5"/>',
-        historial: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
         avisos:    '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>',
         perfil:    '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>'
       }[i.id] || '';
@@ -211,7 +208,6 @@
     const navMap = {
       inicio: '../paciente/inicio.html',
       pedir: '../paciente/solicitar.html',
-      historial: '../paciente/mis-turnos.html',
       avisos: '../paciente/avisos.html',
       perfil: '../paciente/perfil.html'
     };
