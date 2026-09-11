@@ -100,6 +100,13 @@
 .admin-table .icon-btn--danger { color: var(--danger); }
 .admin-table .icon-btn--danger:hover { background: #F8DAD7; }
 
+/* Especialidades: ocultar columnas de ícono y color (no se muestran en esta tabla) */
+.admin-table--especialidades tbody td:nth-child(1):not([colspan]),
+.admin-table--especialidades tbody td:nth-child(3):not([colspan]),
+.admin-table--especialidades tbody td:nth-child(4):not([colspan]) {
+  display: none;
+}
+
 .badge-pending {
   background: rgba(217, 147, 22, 0.15);
   color: #8a5b0c;

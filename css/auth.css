@@ -119,6 +119,17 @@
 }
 .back-link:hover { color: var(--color-header-green-1); }
 
+/* Fila Nombre / Apellido: evita que el placeholder se salga del cuadro */
+.form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.form-row-2col .field,
+.form-row-2col .field input {
+  min-width: 0;
+}
+
 /* ===== Desktop: centrar auth ===== */
 @media (min-width: 1024px) {
   .auth-screen {
