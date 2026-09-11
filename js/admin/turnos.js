@@ -253,20 +253,30 @@
     backdrop.querySelector('#btnDenegar').addEventListener('click', async () => {
       try {
         await window.FC_REPO.updateTurno(id, { estado: 'cancelado' });
+        await window.FC_REPO.createNotificacion({
+          usuarioId: t.pacienteId,
+          mensaje: `Tu turno con Dr. ${t.medico} para el ${window.FC_UTIL.formatFechaCorta(t.fecha)} a las ${t.hora} fue cancelado.`
+        });
         window.FC_UTIL.adminToast('Solicitud denegada', 'success');
         closeModal();
         cargar();
       } catch (err) {
+        console.error('Error al denegar solicitud:', err);
         window.FC_UTIL.adminToast(err.message || 'Error al denegar', 'error');
       }
     });
     backdrop.querySelector('#btnConfirmar').addEventListener('click', async () => {
       try {
         await window.FC_REPO.updateTurno(id, { estado: 'confirmado' });
+        await window.FC_REPO.createNotificacion({
+          usuarioId: t.pacienteId,
+          mensaje: `Tu turno con Dr. ${t.medico} para el ${window.FC_UTIL.formatFechaCorta(t.fecha)} a las ${t.hora} fue confirmado.`
+        });
         window.FC_UTIL.adminToast('Turno confirmado', 'success');
         closeModal();
         cargar();
       } catch (err) {
+        console.error('Error al confirmar turno:', err);
         window.FC_UTIL.adminToast(err.message || 'Error al confirmar', 'error');
       }
     });
