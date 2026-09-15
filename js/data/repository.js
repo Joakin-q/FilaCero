@@ -47,35 +47,127 @@
     }).sort((a, b) => `${a.nombre} ${a.apellido}`.localeCompare(`${b.nombre} ${b.apellido}`));
   }
 
-  async function pacientes() {
-    const [usersSnap, patientsSnap] = await Promise.all([
-      db.collection('usuarios').get(),
-      db.collection('pacientes').get()
+async function pacientes(usuarioId = null) {
+
+  // =====================================================
+  // PACIENTE: solamente cargar sus propios datos
+  // =====================================================
+  if (usuarioId) {
+
+    const [userSnap, patientSnap] = await Promise.all([
+      db.collection('usuarios').doc(usuarioId).get(),
+      db.collection('pacientes')
+        .where('usuarioId', '==', usuarioId)
+        .limit(1)
+        .get()
     ]);
 
-    const patientsMap = {};
-    patientsSnap.docs.forEach(doc => {
-      const d = doc.data();
-      patientsMap[doc.id] = d;
-      if (d.usuarioId) patientsMap[d.usuarioId] = d;
-    });
+    const u = userSnap.exists ? userSnap.data() : {};
+    const p = !patientSnap.empty ? patientSnap.docs[0].data() : {};
 
-    return usersSnap.docs.map(doc => {
-      const u = doc.data();
-      const p = patientsMap[doc.id] || {};
-      return {
-        id: doc.id,
-        usuarioId: doc.id,
-        nombre: p.nombre || u.nombre || u.Nombre || '',
-        apellido: p.apellido || u.apellido || u.Apellido || '',
-        dni: p.dni || u.dni || u.DNI || '—',
-        email: u.email || '',
-        telefono: p.telefono || u.telefono || u.Telefono || '',
-        obraSocial: p.obraSocial || u.obraSocial || u.ObraSocial || '',
-        fechaNacimiento: p.fechaNacimiento || u.fechaNacimiento || u.FechaNacimiento || '',
-        rol: u.rol || 'paciente'
+    return [{
+      id: usuarioId,
+      usuarioId: usuarioId,
+      nombre: p.nombre || u.nombre || u.Nombre || '',
+      apellido: p.apellido || u.apellido || u.Apellido || '',
+      dni: p.dni || u.dni || u.DNI || '—',
+      email: u.email || '',
+      telefono: p.telefono || u.telefono || u.Telefono || '',
+      obraSocial: p.obraSocial || u.obraSocial || u.ObraSocial || '',
+      fechaNacimiento: p.fechaNacimiento || u.fechaNacimiento || u.FechaNacimiento || '',
+      rol: u.rol || 'paciente'
+    }].filter(p => p.nombre || p.apellido || p.email);
+  }
+
+
+  // =====================================================
+  // ADMIN: cargar todos los pacientes
+  // =====================================================
+
+  const [usersSnap, patientsSnap] = await Promise.all([
+    db.collection('usuarios').get(),
+    db.collection('pacientes').get()
+  ]);
+
+  const patientsMap = {};
+
+  patientsSnap.docs.forEach(doc => {
+    const d = doc.data();
+
+    patientsMap[doc.id] = {
+      ...d,
+      _docId: doc.id
+    };
+
+    if (d.usuarioId) {
+      patientsMap[d.usuarioId] = {
+        ...d,
+        _docId: doc.id
       };
-    }).filter(p => p.nombre || p.apellido || p.email);
+    }
+  });
+
+  return usersSnap.docs.map(doc => {
+    const u = doc.data();
+    const p = patientsMap[doc.id] || {};
+
+    return {
+      id: doc.id,
+      usuarioId: doc.id,
+      nombre: p.nombre || u.nombre || u.Nombre || '',
+      apellido: p.apellido || u.apellido || u.Apellido || '',
+      dni: p.dni || u.dni || u.DNI || '—',
+      email: u.email || '',
+      telefono: p.telefono || u.telefono || u.Telefono || '',
+      obraSocial: p.obraSocial || u.obraSocial || u.ObraSocial || '',
+      fechaNacimiento: p.fechaNacimiento || u.fechaNacimiento || u.FechaNacimiento || '',
+      rol: u.rol || 'paciente'
+    };
+  }).filter(p => p.nombre || p.apellido || p.email);
+}
+
+  // ===== Helpers compartidos entre listTurnos() y onTurnos() =====
+
+  function mapTurno(doc, docs, pacs) {
+    const t = doc.data();
+    const medicoId = t.medicoID || t.medicoId || '';
+    const pacienteId = t.pacienteID || t.pacienteId || '';
+    const m = docs.find(x => x.id === medicoId);
+    const p = pacs.find(x =>
+  x.id === pacienteId ||
+  x.usuarioId === pacienteId
+);
+    return {
+      id: doc.id,
+      ...t,
+      medicoId,
+      pacienteId,
+      especialidadId: t.especialidadID || t.especialidadId || (m && m.especialidadId) || '',
+      medico: m ? `${m.nombre} ${m.apellido}`.trim() : '—',
+      especialidad: m ? m.especialidad : (t.especialidadID || '—'),
+      especialidadColor: m ? m.especialidadColor : 'blue',
+      iniciales: m ? m.iniciales : 'P',
+      paciente: p ? `${p.nombre} ${p.apellido}`.trim() || p.email : '—',
+      pacienteDni: p ? p.dni : ''
+    };
+  }
+
+  function applyFiltrosTurnos(list, filtros) {
+    let result = list;
+    if (filtros.medicoId) result = result.filter(t => t.medicoId === filtros.medicoId);
+    if (filtros.estado) result = result.filter(t => t.estado === filtros.estado);
+    if (filtros.desde) result = result.filter(t => t.fecha >= filtros.desde);
+    if (filtros.hasta) result = result.filter(t => t.fecha <= filtros.hasta);
+    if (filtros.especialidadId) result = result.filter(t => t.especialidadId === filtros.especialidadId);
+    return result.sort((a, b) => `${b.fecha || ''}${b.hora || ''}`.localeCompare(`${a.fecha || ''}${a.hora || ''}`));
+  }
+
+  function buildTurnosQuery(filtros) {
+    let query = db.collection('turnos');
+    if (filtros.pacienteId) {
+      query = query.where('pacienteID', '==', filtros.pacienteId);
+    }
+    return query;
   }
 
   const Repo = {
@@ -187,51 +279,82 @@
       return { id, ...data };
     },
 
-    async listTurnos(filtros = {}) {
+async listTurnos(filtros = {}) {
+  try {
+    const query = buildTurnosQuery(filtros);
+
+    const [turnosSnap, docs, pacs] = await Promise.all([
+      query.get(),
+      medicos(),
+      pacientes(filtros.pacienteId || null)
+    ]);
+
+    const list = turnosSnap.docs.map(doc =>
+      mapTurno(doc, docs, pacs)
+    );
+
+    return applyFiltrosTurnos(list, filtros);
+
+  } catch (e) {
+    console.error('❌ Error en listTurnos:', e);
+    throw e;
+  }
+},
+
+    /**
+     * onTurnos — versión en tiempo real de listTurnos().
+     * Se suscribe a la colección 'turnos' y llama a callback(list) cada vez
+     * que hay un cambio (creación, edición, borrado) que afecte al filtro.
+     * Devuelve una función "unsubscribe" para cortar la escucha si hace falta.
+     */
+onTurnos(filtros = {}, callback) {
+  const query = buildTurnosQuery(filtros);
+
+  console.log('🔎 ID PACIENTE:', filtros.pacienteId);
+  console.log('🔎 Iniciando listener de turnos...');
+
+  return query.onSnapshot(async (turnosSnap) => {
+    try {
+
+      console.log('✅ TURNOS LEÍDOS:', turnosSnap.docs.length);
+
+      let docs;
+      let pacs;
+
       try {
-        let query = db.collection('turnos');
-
-        if (filtros.pacienteId) {
-          query = query.where('pacienteID', '==', filtros.pacienteId);
-        }
-
-        const [turnosSnap, docs, pacs] = await Promise.all([
-          query.get(), medicos(), pacientes()
-        ]);
-
-        let list = turnosSnap.docs.map(doc => {
-          const t = doc.data();
-          const medicoId = t.medicoID || t.medicoId || '';
-          const pacienteId = t.pacienteID || t.pacienteId || '';
-          const m = docs.find(x => x.id === medicoId);
-          const p = pacs.find(x => x.id === pacienteId);
-          return {
-            id: doc.id,
-            ...t,
-            medicoId,
-            pacienteId,
-            especialidadId: t.especialidadID || t.especialidadId || (m && m.especialidadId) || '',
-            medico: m ? `${m.nombre} ${m.apellido}`.trim() : '—',
-            especialidad: m ? m.especialidad : (t.especialidadID || '—'),
-            especialidadColor: m ? m.especialidadColor : 'blue',
-            iniciales: m ? m.iniciales : 'P',
-            paciente: p ? `${p.nombre} ${p.apellido}`.trim() || p.email : '—',
-            pacienteDni: p ? p.dni : ''
-          };
-        });
-
-        if (filtros.medicoId) list = list.filter(t => t.medicoId === filtros.medicoId);
-        if (filtros.estado) list = list.filter(t => t.estado === filtros.estado);
-        if (filtros.desde) list = list.filter(t => t.fecha >= filtros.desde);
-        if (filtros.hasta) list = list.filter(t => t.fecha <= filtros.hasta);
-        if (filtros.especialidadId) list = list.filter(t => t.especialidadId === filtros.especialidadId);
-
-        return list.sort((a, b) => `${b.fecha || ''}${b.hora || ''}`.localeCompare(`${a.fecha || ''}${a.hora || ''}`));
-      } catch (e) {
-        console.error('❌ Error en listTurnos:', e);
-        throw e;
+        docs = await medicos();
+        console.log('✅ MÉDICOS LEÍDOS:', docs.length);
+      } catch (error) {
+        console.error('❌ ERROR EN MÉDICOS:', error);
+        return;
       }
-    },
+
+      try {
+        pacs = await pacientes(filtros.pacienteId || null);
+        console.log('✅ PACIENTES LEÍDOS:', pacs.length);
+      } catch (error) {
+        console.error('❌ ERROR EN PACIENTES:', error);
+        return;
+      }
+
+      const list = turnosSnap.docs.map(doc =>
+        mapTurno(doc, docs, pacs)
+      );
+
+      console.log('🎉 TODO CORRECTO. TURNOS:', list);
+
+      callback(applyFiltrosTurnos(list, filtros));
+
+    } catch (error) {
+      console.error('❌ ERROR PROCESANDO TURNOS:', error);
+    }
+
+  }, (error) => {
+
+    console.error('🚨 ERROR DIRECTO DE FIRESTORE:', error);
+
+  });
+},
 
     async createTurno(data) {
       const medico = await this.getMedico(data.medicoId);
