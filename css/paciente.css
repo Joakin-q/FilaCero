@@ -914,6 +914,140 @@
 
 
 /* =========================================
+   RESPONSIVE MOVIL (<= 1023px)
+   Ajustes finos para celular. No cambia el
+   diseno, solo lo acomoda a pantallas chicas.
+   ========================================= */
+
+@media (max-width: 1023px) {
+
+  /* Notch / isla del celular */
+
+  .turnos-header {
+    padding-top: calc(20px + env(safe-area-inset-top));
+  }
+
+  /*
+     La barra Atras / Siguiente del wizard quedaba tapada
+     por la bottom-nav. La subimos justo arriba de ella.
+  */
+
+  .wizard-nav {
+    bottom: calc(62px + env(safe-area-inset-bottom));
+    padding: 12px 16px;
+  }
+
+  .wizard-wrap {
+    padding-bottom: 160px;
+  }
+
+  /* Filtros: scroll horizontal sin barra visible */
+
+  .filter-tabs {
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding: 0 16px;
+  }
+
+  .filter-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* El texto largo no rompe la tarjeta */
+
+  .turno-specialty,
+  .turno-doctor {
+    overflow-wrap: anywhere;
+  }
+
+  .turno-bottom {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .profile-row .value,
+  .confirm-row .value {
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  .profile-header > div {
+    min-width: 0;
+  }
+
+  .profile-name,
+  .profile-email {
+    overflow-wrap: anywhere;
+  }
+
+  /* Opciones del wizard */
+
+  .option-card .option-title,
+  .option-card .option-sub {
+    overflow-wrap: anywhere;
+  }
+}
+
+
+/* ===== Celulares angostos (<= 380px) ===== */
+
+@media (max-width: 380px) {
+
+  .stats-row {
+    gap: 6px;
+    padding: 0 12px;
+  }
+
+  .stat-card {
+    padding: 9px 2px;
+  }
+
+  .stat-card strong {
+    font-size: 16px;
+  }
+
+  .stat-card span {
+    font-size: 9.5px;
+  }
+
+  .mobile-header h1,
+  .turnos-header h1 {
+    font-size: 22px;
+  }
+
+  .step .label {
+    font-size: 9px;
+  }
+
+  .step .dot {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+
+  .step:not(:last-child)::after {
+    top: 12px;
+  }
+
+  .times-grid {
+    gap: 6px;
+  }
+
+  .welcome-card,
+  .search-bar {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
+  .turnos-list,
+  .section-block {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+
+/* =========================================
    RESPONSIVE DESKTOP
    ========================================= */
 

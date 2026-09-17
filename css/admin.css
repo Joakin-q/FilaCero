@@ -468,3 +468,235 @@
   .admin-table td:nth-child(4) { display: none; }
   .admin-table th, .admin-table td { padding: 10px 12px; }
 }
+
+
+/* ==========================================================================
+ * RESPONSIVE MOVIL (<= 1023px)
+ * main.css oculta la sidebar y la topbar de escritorio en celular.
+ * Como el panel de admin no tiene bottom-nav, aca las recuperamos
+ * convertidas en una barra superior pensada para el celular.
+ * ========================================================================== */
+
+@media (max-width: 1023px) {
+
+  /* Sin bottom-nav no hace falta el hueco de 80px */
+
+  .app-shell {
+    padding-bottom: 24px;
+  }
+
+  /* ===== Menu admin: barra horizontal con scroll ===== */
+
+  .desktop-sidebar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    height: auto;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    padding: 10px 12px;
+    padding-top: calc(10px + env(safe-area-inset-top));
+    background: var(--color-header-green-1);
+    color: var(--color-text-inverse);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .desktop-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* En celular no aplican el colapsado ni los titulos de seccion */
+
+  .desktop-sidebar .sidebar-toggle,
+  .desktop-sidebar .sidebar-section,
+  .desktop-sidebar .sidebar-brand {
+    display: none;
+  }
+
+  .desktop-sidebar .sidebar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 8px 13px;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-text-inverse);
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .desktop-sidebar .sidebar-link.is-active {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  .desktop-sidebar .sidebar-link svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .desktop-sidebar .sidebar-footer {
+    margin: 0;
+    padding: 0;
+    border: none;
+    flex: 0 0 auto;
+  }
+
+  .desktop-sidebar .sidebar-footer .sidebar-link {
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  /* ===== Topbar compacta ===== */
+
+  .desktop-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    height: auto;
+    padding: 12px 16px;
+    background: white;
+    border-bottom: 1px solid rgba(28, 43, 34, 0.06);
+  }
+
+  .desktop-topbar h1 {
+    font-size: 1.15rem;
+  }
+
+  .desktop-topbar .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 50%;
+    padding: 5px 10px 5px 5px;
+    border-radius: var(--radius-pill);
+    background: #F5F1E4;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 0;
+  }
+
+  .desktop-topbar .user-chip .avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--color-header-green-1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .desktop-topbar .user-chip span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ===== Contenido ===== */
+
+  .admin-page {
+    padding: 16px 12px 32px;
+  }
+
+  .admin-page-header {
+    margin-bottom: 18px;
+  }
+
+  .admin-page-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .admin-page-header .btn {
+    width: 100%;
+  }
+
+  .admin-toolbar {
+    padding: 12px;
+    align-items: stretch;
+  }
+
+  .admin-toolbar-left,
+  .admin-toolbar-right {
+    width: 100%;
+  }
+
+  .admin-toolbar .field,
+  .admin-toolbar .field input,
+  .admin-toolbar .field select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .admin-toolbar .btn {
+    width: 100%;
+  }
+
+  /* La tabla scrollea sola en vez de deformar la pantalla */
+
+  .admin-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-table {
+    min-width: 520px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .metric-card {
+    padding: 16px 18px;
+  }
+
+  .metric-card .metric-value {
+    font-size: 1.7rem;
+  }
+
+  .panel {
+    padding: 18px 16px;
+  }
+
+  .bar-row {
+    grid-template-columns: 88px 1fr 30px;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .mini-list-item .when {
+    flex-shrink: 0;
+  }
+
+  .admin-modal {
+    padding: 22px 18px 18px;
+    width: calc(100vw - 24px);
+  }
+
+  .admin-modal .form-actions .btn {
+    flex: 1;
+  }
+
+  .admin-toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    text-align: center;
+  }
+}

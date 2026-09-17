@@ -10,7 +10,7 @@
     window.FC_UTIL.mountTopbar({ title: 'Mis turnos', user: session });
   }
 
-  window.FC_UTIL.mountBottomNav('pedir');
+  window.FC_UTIL.mountBottomNav('turnos');
 
   let currentTurnos = [];
   let unsubscribeTurnos = null;

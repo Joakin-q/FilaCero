@@ -21,6 +21,20 @@ body {
 
 img { display: block; max-width: 100%; }
 
+/*
+   Red de seguridad para iconos.
+   Un <svg> sin atributos width/height se estira al 100% del
+   contenedor (por eso se veian gigantes en celular). Con :where()
+   la regla tiene especificidad 0, asi que cualquier estilo propio
+   de la pagina la sigue pisando sin problema.
+*/
+:where(svg:not([width]):not([height])) {
+  width: 20px;
+  height: 20px;
+}
+
+svg { flex-shrink: 0; }
+
 button {
   font-family: inherit;
   cursor: pointer;
@@ -265,6 +279,90 @@ p { font-size: 0.95rem; color: var(--color-text-muted); }
 .modal-backdrop.is-visible {
   opacity: 1;
   pointer-events: auto;
+}
+
+/* ============================================================ */
+/* ===== BREAKPOINT MOVIL / TABLET (<= 1023px) ===== */
+/* ============================================================ */
+@media (max-width: 1023px) {
+
+  /*
+     La sidebar y la topbar son del layout de escritorio.
+     Antes quedaban visibles en celular y sus iconos (que no
+     tienen width/height) se estiraban a pantalla completa.
+  */
+  .desktop-sidebar,
+  .desktop-topbar {
+    display: none;
+  }
+
+  .desktop-main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .desktop-content,
+  .desktop-content-inner {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Nada se puede pasar del ancho de la pantalla */
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Respetar el notch / isla de los celulares */
+  .mobile-header {
+    padding-top: calc(20px + env(safe-area-inset-top));
+  }
+
+  /* Si la bottom-nav no tiene items (paginas de admin) no se dibuja */
+  .bottom-nav:empty {
+    display: none;
+  }
+
+  /* Areas tactiles comodas + sin flash gris al tocar */
+  .btn,
+  .btn-outline,
+  .nav-item,
+  .sidebar-link {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
+
+  /*
+     La bottom-nav tiene 5 items (incluye "Mis turnos"),
+     asi que entren todos sin desbordar en pantallas de 360px.
+  */
+  .bottom-nav {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .nav-item {
+    min-width: 0;
+    flex: 1 1 0;
+    padding: 6px 4px;
+    font-size: 9.5px;
+  }
+
+  .nav-label {
+    white-space: nowrap;
+  }
+
+  /* iOS hace zoom automatico si el input mide menos de 16px */
+  .field input,
+  .field select,
+  .field textarea {
+    font-size: 16px;
+  }
 }
 
 /* ============================================================ */

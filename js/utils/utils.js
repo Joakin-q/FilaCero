@@ -177,46 +177,44 @@
     `;
   }
 
-  /** Inyecta bottom-nav móvil (DESHABILITADO: solo visual, no navega) */
+  /** Inyecta bottom-nav móvil */
   function mountBottomNav(active = 'turnos') {
     const nav = document.getElementById('fc-bottom-nav');
     if (!nav) return;
+
+    /*
+     * "Mis turnos" faltaba en la barra inferior, así que en celular
+     * esa pantalla quedaba sin forma de llegar (en desktop está en
+     * la sidebar). Cada item guarda su destino en data-nav.
+     */
     const items = [
-      { id: 'inicio',    label: 'Inicio' },
-      { id: 'pedir',     label: 'Turnos' },
-      { id: 'avisos',    label: 'Avisos' },
-      { id: 'perfil',    label: 'Perfil' }
+      { id: 'inicio', label: 'Inicio',     href: '../paciente/inicio.html' },
+      { id: 'pedir',  label: 'Pedir',      href: '../paciente/solicitar.html' },
+      { id: 'turnos', label: 'Mis turnos', href: '../paciente/mis-turnos.html' },
+      { id: 'avisos', label: 'Avisos',     href: '../paciente/avisos.html' },
+      { id: 'perfil', label: 'Perfil',     href: '../paciente/perfil.html' }
     ];
+
+    const icons = {
+      inicio: '<path d="m3 11 9-8 9 8M5 10v10h14V10"/>',
+      pedir:  '<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16h4" stroke-width="1.5"/>',
+      turnos: '<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/>',
+      avisos: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>',
+      perfil: '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>'
+    };
+
     nav.innerHTML = items.map(i => `
-      <button type="button" class="nav-item ${i.id === active ? 'is-active' : ''}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
-        ${i.label}
+      <button type="button" class="nav-item ${i.id === active ? 'is-active' : ''}" data-nav="${i.id}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icons[i.id] || ''}</svg>
+        <span class="nav-label">${i.label}</span>
       </button>
     `).join('');
-    // Reemplazar los SVGs vacíos por los iconos correctos
-    nav.querySelectorAll('.nav-item').forEach((el, idx) => {
-      const i = items[idx];
-      const svg = el.querySelector('svg');
-      svg.innerHTML = {
-        inicio:    '<path d="m3 11 9-8 9 8M5 10v10h14V10"/>',
-        pedir:     '<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M12 14v4M10 16h4" stroke-width="1.5"/>',
-        avisos:    '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>',
-        perfil:    '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>'
-      }[i.id] || '';
-    });
-    // Navegación funcional
-    const navMap = {
-      inicio: '../paciente/inicio.html',
-      pedir: '../paciente/solicitar.html',
-      avisos: '../paciente/avisos.html',
-      perfil: '../paciente/perfil.html'
-    };
+
+    // Navegación por id, no por el texto del botón
     nav.querySelectorAll('button.nav-item').forEach((el) => {
       el.addEventListener('click', () => {
-        const id = items.find(i => i.label === el.textContent.trim())?.id;
-        if (id && navMap[id]) {
-          window.location.href = navMap[id];
-        }
+        const item = items.find(i => i.id === el.dataset.nav);
+        if (item) window.location.href = item.href;
       });
     });
   }
