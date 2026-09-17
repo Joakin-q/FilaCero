@@ -4,7 +4,7 @@
  * Estrategia: cache-first para assets estáticos, network-first para navegación.
  * Si el usuario está offline, sirve el index.html cacheado.
  */
-const CACHE = 'filacero-v2';
+const CACHE = 'filacero-v3';
 const PRECACHE = [
   './',
   './index.html',
