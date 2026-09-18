@@ -284,18 +284,58 @@
     },
 
     async createTurno(data) {
-      const medico = await this.getMedico(data.medicoId);
-      const ref = await db.collection('turnos').add({
-        pacienteID: data.pacienteId,
-        medicoID: data.medicoId,
-        especialidadID: medico ? medico.especialidadId : '',
-        fecha: data.fecha,
-        hora: data.hora,
-        estado: data.estado || 'confirmado',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      return { id: ref.id, ...data };
-    },
+  if (!data.medicoId || !data.fecha || !data.hora) {
+    throw new Error('Faltan médico, fecha u hora.');
+  }
+
+  const medico = await this.getMedico(data.medicoId);
+
+  // ID único para médico + fecha + hora.
+  // Impide que dos turnos usen el mismo horario.
+  const horaId = data.hora.replace(':', '');
+  const horarioId = `${data.medicoId}_${data.fecha}_${horaId}`;
+
+  const horarioRef = db.collection('Horarios').doc(horarioId);
+  const turnoRef = db.collection('turnos').doc();
+
+  await db.runTransaction(async transaction => {
+    const horarioSnap = await transaction.get(horarioRef);
+
+    // Si el horario ya existe y está ocupado, bloquea la reserva.
+    if (
+      horarioSnap.exists &&
+      horarioSnap.data().disponibilidad === false
+    ) {
+      throw new Error('Ese horario ya fue reservado por otro paciente.');
+    }
+
+    // Marca o crea el horario como ocupado.
+    transaction.set(horarioRef, {
+      MedicoID: data.medicoId,
+      fecha: data.fecha,
+      hora: data.hora,
+      disponibilidad: false
+    }, { merge: true });
+
+    // Crea el turno.
+    transaction.set(turnoRef, {
+      pacienteID: data.pacienteId,
+      medicoID: data.medicoId,
+      especialidadID: medico ? medico.especialidadId : '',
+      horarioID: horarioId,
+      fecha: data.fecha,
+      hora: data.hora,
+      estado: data.estado || 'confirmado',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  });
+
+  return {
+    id: turnoRef.id,
+    ...data,
+    horarioID: horarioId
+  };
+},   
 
     async updateTurno(id, patch) { await db.collection('turnos').doc(id).update(patch); return { id, ...patch }; },
     async deleteTurno(id) { await db.collection('turnos').doc(id).delete(); return true; },
