@@ -184,14 +184,29 @@
       return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     },
 
-    async listHorariosDisponibles(medicoId, fecha) {
-      const date = new Date(fecha + 'T00:00:00');
-      const diaSemana = date.getDay();
-      const doc = await db.collection('Horarios').doc(`${medicoId}_${diaSemana}`).get();
-      if (!doc.exists) return [];
-      const slots = doc.data().slots || [];
-      return slots.map(slot => ({ id: `${doc.id}_${slot}`, hora: slot }));
-    },
+  async listHorariosDisponibles(medicoId, fecha) {
+  const snap = await db
+    .collection('Horarios')
+    .where('MedicoID', '==', medicoId)
+    .where('fecha', '==', fecha)
+    .get();
+
+  const porHora = new Map();
+
+  snap.docs
+    .map(doc => ({ id: doc.id, ...doc.data() }))
+    .forEach(slot => {
+      const anterior = porHora.get(slot.hora);
+
+      if (!anterior || slot.disponibilidad === false) {
+        porHora.set(slot.hora, slot);
+      }
+    });
+
+  return [...porHora.values()]
+    .sort((a, b) => a.hora.localeCompare(b.hora));
+},
+
 
     async createHorario(data) {
       const ref = await db.collection('Horarios').add({

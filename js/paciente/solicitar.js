@@ -169,33 +169,57 @@
   }
 
   // ===== Paso 4: Horarios (mock) =====
-  async function renderHorarios() {
-    const grid = $('#timesGrid');
-    if (!state.medicoId || !state.fecha) {
-      grid.innerHTML = '<p class="error">Datos insuficientes para cargar horarios.</p>';
+ async function renderHorarios() {
+  const grid = $('#timesGrid');
+
+  try {
+    const slots = await window.FC_REPO.listHorariosDisponibles(
+      state.medicoId,
+      state.fecha
+    );
+
+    if (!slots.length) {
+      grid.innerHTML = '<p class="empty-state">No hay horarios para esta fecha.</p>';
       return;
     }
-    grid.innerHTML = '<p class="loading">Cargando horarios disponibles...</p>';
-    try {
-      const slots = await window.FC_REPO.listHorariosDisponibles(state.medicoId, state.fecha);
-      if (slots.length === 0) {
-        grid.innerHTML = '<p class="empty-state">No hay horarios disponibles para este día.</p>';
-        return;
-      }
-      grid.innerHTML = slots.map(s => `<div class="time-slot" data-hora="${s.hora}">${s.hora}</div>`).join('');
-      grid.querySelectorAll('.time-slot').forEach((el) => {
-        el.addEventListener('click', () => {
-          grid.querySelectorAll('.time-slot').forEach(s => s.classList.remove('is-selected'));
-          el.classList.add('is-selected');
-          state.horarioId = el.dataset.hora;
-          state.hora = el.dataset.hora;
-          updateNextButton();
-        });
+
+    grid.innerHTML = slots.map(slot => {
+      const ocupado = slot.disponibilidad === false;
+
+      return `
+        <div
+          class="time-slot ${ocupado ? 'is-unavailable' : ''}"
+          data-id="${slot.id}"
+          data-hora="${slot.hora}"
+          style="
+            ${ocupado
+              ? 'background:#fee2e2;color:#b91c1c;text-decoration:line-through;opacity:.7;cursor:not-allowed;'
+              : ''
+            }
+          "
+        >
+          ${slot.hora}${ocupado ? ' · Ocupado' : ''}
+        </div>
+      `;
+    }).join('');
+
+    grid.querySelectorAll('.time-slot:not(.is-unavailable)').forEach(el => {
+      el.addEventListener('click', () => {
+        grid.querySelectorAll('.time-slot').forEach(x =>
+          x.classList.remove('is-selected')
+        );
+
+        el.classList.add('is-selected');
+        state.horarioId = el.dataset.id;
+        state.hora = el.dataset.hora;
+
+        updateNextButton();
       });
-    } catch (error) {
-      grid.innerHTML = `<p class="error">Error al cargar horarios: ${error.message}</p>`;
-    }
+    });
+  } catch (error) {
+    grid.innerHTML = `<p class="error">${error.message}</p>`;
   }
+}
 
   // ===== Paso 5: Confirmar (solo visual) =====
   async function renderConfirm() {
