@@ -368,4 +368,10 @@
     searchInput.addEventListener('input', renderList);
   }
 
+    /*
+   * Carga inicial
+   */
+  if (session) {
+    loadAndRender();
+  }
 })();
